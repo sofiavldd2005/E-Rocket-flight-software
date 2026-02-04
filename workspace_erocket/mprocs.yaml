@@ -1,7 +1,7 @@
 # mprocs.yaml
 procs:
   MicroXRCEAgent: 
-    shell: "sudo MicroXRCEAgent serial --dev /dev/ttyACM0 -b 921600"
+    shell: "echo 'pi' | sudo -S MicroXRCEAgent serial --dev /dev/ttyAMA0 -b 921600"
     autostart: false
     stop: SIGINT
 

@@ -11,9 +11,9 @@ def transform_row(row):
     t = row[0]
 
     # Original indices
-    x, dx, ddx = row[1], row[2], row[3]
-    y, dy, ddy = row[4], row[5], row[6]
-    z, dz, ddz = row[7], row[8], row[9]
+    x, dx, ddx, d3x, d4x = row[1], row[2], row[3], row[4], row[5]
+    y, dy, ddy, d3y, d4y = row[6], row[7], row[8], row[9], row[10]
+    z, dz, ddz, d3z, d4z = row[11], row[12], row[13], row[14], row[15]
 
     # Target system mapping
     # new_x = old_y (front)
@@ -21,9 +21,9 @@ def transform_row(row):
     # new_z = old_x (up)
     return [
         t,
-        x, dx, ddx,
-        y, dy, ddy,
-        z, dz, ddz,
+        x, dx, ddx, d3x, d4x,
+        y, dy, ddy, d3y, d4y,
+        z, dz, ddz, d3z, d4z,
     ]
 
 def csv_to_header(csv_file):
@@ -41,9 +41,9 @@ def csv_to_header(csv_file):
     # Axis names for comments (after transformation)
     col_names = [
         "t [s]",
-        "x [m]", "dx [m/s]", "ddx [m/s2]",
-        "y [m]", "dy [m/s]", "ddy [m/s2]",
-        "z [m]", "dz [m/s]", "ddz [m/s2]"
+        "x [m]", "dx [m/s]", "ddx [m/s2]", "d3x [m/s3]", "d4x [m/s4]",
+        "y [m]", "dy [m/s]", "ddy [m/s2]", "d3y [m/s3]", "d4y [m/s4]",
+        "z [m]", "dz [m/s]", "ddz [m/s2]", "d3z [m/s3]", "d4z [m/s4]"
     ]
 
     # Output filename
@@ -57,7 +57,7 @@ def csv_to_header(csv_file):
 
         # Column names as comments
         f.write("// Columns:\n")
-        for i, name in enumerate(col_names):
+        for i, name in enumerate(col_names): 
             f.write(f"// {i}: {name}\n")
         f.write("\n")
 

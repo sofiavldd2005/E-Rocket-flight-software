@@ -57,11 +57,25 @@ namespace controller
     constexpr char CONTROLLER_POSITION_MIN_OUTPUT_PARAM[] = "offboard.controller.position.gains.min_output";
     constexpr char CONTROLLER_POSITION_MAX_OUTPUT_PARAM[] = "offboard.controller.position.gains.max_output";
     constexpr char CONTROLLER_POSITION_FREQUENCY_HERTZ_PARAM[] = "offboard.controller.position.frequency_hertz";
+
 } // namespace controller
 
 namespace controller_generic
 {
+
+    // Params for generic controller
+
     constexpr char CONTROLLER_GENERIC_FREQUENCY_HERTZ_PARAM[] = "offboard.controller.generic.frequency_hertz";
+    constexpr char CONTROLLER_GENERIC_KP_PARAM[] = "offboard.controller.generic.gains.Kp";
+    constexpr char CONTROLLER_GENERIC_KV_PARAM[] = "offboard.controller.generic.gains.Kv";
+    constexpr char CONTROLLER_GENERIC_LAMBDA1_PARAM[] = "offboard.controller.generic.gains.Lambda_1";
+    constexpr char CONTROLLER_GENERIC_LAMBDA2_PARAM[] = "offboard.controller.generic.gains.Lambda_2";
+    constexpr char CONTROLLER_GENERIC_LAMBDA3_PARAM[] = "offboard.controller.generic.gains.Lambda_3";
+    constexpr char CONTROLLER_GENERIC_KR_PARAM[] = "offboard.controller.generic.gains.kr";
+    constexpr char CONTROLLER_GENERIC_HR_PARAM[] = "offboard.controller.generic.gains.hr";
+    constexpr char CONTROLLER_GENERIC_KW_PARAM[] = "offboard.controller.generic.gains.kw";
+    constexpr char CONTROLLER_GENERIC_HW_PARAM[] = "offboard.controller.generic.gains.hw";
+    constexpr char CONTROLLER_GENERIC_DELTA_PARAM[] = "offboard.controller.generic.delta";
 } // namespace controller_generic
 
 namespace flight_mode
