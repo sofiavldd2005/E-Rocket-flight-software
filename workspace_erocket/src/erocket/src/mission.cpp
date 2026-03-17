@@ -235,8 +235,8 @@ void Mission::mission() {
 		Eigen::Map<Eigen::Vector3d>(setpoint.position.data())     = new_setpoint.pd;
 		Eigen::Map<Eigen::Vector3d>(setpoint.velocity.data())     = new_setpoint.pd_dot;
 		Eigen::Map<Eigen::Vector3d>(setpoint.acceleration.data()) = new_setpoint.pd_2dot;
-		Eigen::Map<Eigen::Vector3d>(setpoint.jerk.data()) = Eigen::Vector3d::Zero();
-		Eigen::Map<Eigen::Vector3d>(setpoint.snap.data()) = Eigen::Vector3d::Zero();
+		Eigen::Map<Eigen::Vector3d>(setpoint.jerk.data()) = new_setpoint.pd_3dot;
+		Eigen::Map<Eigen::Vector3d>(setpoint.snap.data()) = new_setpoint.pd_4dot;
 		setpoint.yaw = std::nan("");
 
 		trajectory_setpoint_publisher_->publish(setpoint);
@@ -260,18 +260,12 @@ void Mission::mission() {
 			setpoint.position[0]     = new_setpoint[1];
 			setpoint.velocity[0]     = new_setpoint[2];
 			setpoint.acceleration[0] = new_setpoint[3];
-			setpoint.jerk[0] = new_setpoint[4];
-			setpoint.snap[0] = new_setpoint[5];
-			setpoint.position[1]     = new_setpoint[6];
-			setpoint.velocity[1]     = new_setpoint[7];
-			setpoint.acceleration[1] = new_setpoint[8];
-			setpoint.jerk[1] = new_setpoint[9];
-			setpoint.snap[1] = new_setpoint[10];
-			setpoint.position[2]     = new_setpoint[11];
-			setpoint.velocity[2]     = new_setpoint[12];
-			setpoint.acceleration[2] = new_setpoint[13];
-			setpoint.jerk[2] = new_setpoint[14];
-			setpoint.snap[2] = new_setpoint[15];
+			setpoint.position[1]     = new_setpoint[4];
+			setpoint.velocity[1]     = new_setpoint[5];
+			setpoint.acceleration[1] = new_setpoint[6];
+			setpoint.position[2]     = new_setpoint[7];
+			setpoint.velocity[2]     = new_setpoint[8];
+			setpoint.acceleration[2] = new_setpoint[9];
 			setpoint.yaw             = std::nan("");
 
 			trajectory_setpoint_publisher_->publish(setpoint);
@@ -297,8 +291,8 @@ void Mission::mission() {
 		Eigen::Map<Eigen::Vector3d>(setpoint.position.data())     = new_setpoint.pd;
 		Eigen::Map<Eigen::Vector3d>(setpoint.velocity.data())     = new_setpoint.pd_dot;
 		Eigen::Map<Eigen::Vector3d>(setpoint.acceleration.data()) = new_setpoint.pd_2dot;
-		Eigen::Map<Eigen::Vector3d>(setpoint.jerk.data()) = Eigen::Vector3d::Zero();
-		Eigen::Map<Eigen::Vector3d>(setpoint.snap.data()) = Eigen::Vector3d::Zero();
+		Eigen::Map<Eigen::Vector3d>(setpoint.jerk.data()) = new_setpoint.pd_3dot;
+		Eigen::Map<Eigen::Vector3d>(setpoint.snap.data()) = new_setpoint.pd_4dot;
 		setpoint.yaw = std::nan("");
 
 		trajectory_setpoint_publisher_->publish(setpoint);

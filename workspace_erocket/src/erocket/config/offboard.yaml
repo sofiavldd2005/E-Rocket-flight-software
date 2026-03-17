@@ -4,7 +4,7 @@
       mass_of_system: 1.6
       lever_arm: 0.27
       gravitational_acceleration: 9.81
-      moment_of_inertia: 0.45
+      moment_of_inertia: 0.375
       vehicle:
         servo_active: true
         motor_active: true
@@ -31,30 +31,17 @@
           active: true
           frequency_hertz: 50.
           gains:
-            k_p:  [3.0, 4.5, 4.5]   # Proportional gain
-            k_d:  [2.5, 2.0, 2.0]   # Derivative gain
-            k_i:  [0.0, 0.0, 0.0]   # Integral gain
+            k_p:  [3.0, 3.0, 8.5]   # Proportional gain
+            k_d:  [2.5, 2.5, 3.0]   # Derivative gain
+            k_i:  [0.2, 0.2, 1.0]   # Integral gain
             k_ff: [1.0, 1.0, 1.0]   # Feedforward gain
             min_output: [-20., -20., -20.] # Minimum output of each PID
             max_output: [ 20.,  20.,  20.]
         generic:
           frequency_hertz: 100.
-          gains:
-            Kp: [3.5,4.0,4.0] # inner loop proportional gain
-            Kv: [1.5,1.5,1.5] # inner loop derivative gain
-            Lambda_1: [2.0,2.0,0.0] # avf only uses 1st and 2nd element (kp)
-            Lambda_2: [1.3,1.3,0.0] # avf only uses 1st and 2nd element (kd)
-            Lambda_3: [0.4,0.4,0.0] # avf only uses 1st and 2nd element (ki)
-            kr: 3.0 # avf uses this for cutoff frequency of attitude command filter (wc)
-            hr: 0.7 # avf uses this for damping ratio of attitude command filter (xi)
-            kw: 1.0 # avf uses this for altitude integrator gain
-            hw: 35.0
-          delta: 0.8  
-
-
       mission:
         trajectory_setpoint:
           active: true
-        takeoff_climb_height_meters: 1.1
-        takeoff_climb_duration_seconds: 5.0
+        takeoff_climb_height_meters: 0.6
+        takeoff_climb_duration_seconds: 3.0
         landing_descent_duration_seconds: 4.0
