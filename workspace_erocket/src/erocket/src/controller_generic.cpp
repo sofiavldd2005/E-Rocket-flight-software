@@ -10,7 +10,6 @@
 #include <erocket/controller/impls/generic_controller.hpp>
 
 #include <chrono>
-#include "attd_fun.h"
 
 using namespace std::chrono;
 using namespace px4_msgs::msg;
