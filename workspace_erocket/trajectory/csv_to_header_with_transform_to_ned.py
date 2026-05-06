@@ -2,6 +2,8 @@ import csv
 import sys
 import os
 
+
+# Update: After seeing the mission.cpp, I can see where the genereated header is being used
 def transform_row(row):
     """
     Transform coordinates from:
@@ -21,14 +23,21 @@ def transform_row(row):
     # new_z = old_x (up)
     return [
         t,
-        x, dx, ddx,
-        y, dy, ddy,
-        z, dz, ddz,
+        x,
+        dx,
+        ddx,
+        y,
+        dy,
+        ddy,
+        z,
+        dz,
+        ddz,
     ]
 
+
 def csv_to_header(csv_file):
-    with open(csv_file, newline='') as f:
-        reader = csv.reader(f, delimiter=',')
+    with open(csv_file, newline="") as f:
+        reader = csv.reader(f, delimiter=",")
         header = next(reader)  # skip header line
 
         transformed_data = []
@@ -41,9 +50,15 @@ def csv_to_header(csv_file):
     # Axis names for comments (after transformation)
     col_names = [
         "t [s]",
-        "x [m]", "dx [m/s]", "ddx [m/s2]",
-        "y [m]", "dy [m/s]", "ddy [m/s2]",
-        "z [m]", "dz [m/s]", "ddz [m/s2]"
+        "x [m]",
+        "dx [m/s]",
+        "ddx [m/s2]",
+        "y [m]",
+        "dy [m/s]",
+        "ddy [m/s2]",
+        "z [m]",
+        "dz [m/s]",
+        "ddz [m/s2]",
     ]
 
     # Output filename
@@ -51,7 +66,7 @@ def csv_to_header(csv_file):
     header_file = base + "_setpoints.h"
 
     # Write header file
-    with open(header_file, 'w') as f:
+    with open(header_file, "w") as f:
         ncols = len(transformed_data[0])
         f.write("#ifndef SETPOINTS_H\n#define SETPOINTS_H\n\n")
 
@@ -70,6 +85,7 @@ def csv_to_header(csv_file):
         f.write("};\n\n#endif // SETPOINTS_H\n")
 
     print(f"Header file created: {header_file}")
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
