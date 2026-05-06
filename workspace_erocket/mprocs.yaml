@@ -1,6 +1,6 @@
 # mprocs.yaml
 procs:
-  MicroXRCEAgent: 
+  MicroXRCEAgent: #The uXRCE-DDS bridge - Serial conection to the Pixhawk running PX4 - to pipeline where the  Topics
     shell: "sudo MicroXRCEAgent serial --dev /dev/ttyACM0 -b 921600"
     autostart: false
     stop: SIGINT
@@ -9,19 +9,20 @@ procs:
     shell: /bin/bash -c "source /opt/ros/jazzy/setup.bash && colcon build"
     autostart: true
 
-  LIFT_OFF:
+  # see mission node
+  LIFT_OFF: # set command -> Parameters to control the flight state machine
     shell: /bin/bash -c "source /opt/ros/jazzy/setup.bash && source install/local_setup.bash && ros2 param set /mission offboard.flight_mode 3"
     autostart: false
-  
-  START_MISSION:
+
+  START_MISSION: # set command -> Parameters to control the flight state machine
     shell: /bin/bash -c "source /opt/ros/jazzy/setup.bash && source install/local_setup.bash && ros2 param set /mission offboard.flight_mode 4"
     autostart: false
 
-  LAND:
+  LAND: # set command -> Parameters to control the flight state machine
     shell: /bin/bash -c "source /opt/ros/jazzy/setup.bash && source install/local_setup.bash && ros2 param set /mission offboard.flight_mode 5"
     autostart: false
 
-  MOCAP:
+  MOCAP: #TF2 to convert the VRPN camera data into rocket coordinates.
     shell: /bin/bash -c "source /opt/ros/jazzy/setup.bash && source install/local_setup.bash && ros2 launch erocket mocap_forwarder.launch.py"
     autostart: false
     stop: SIGINT
@@ -31,17 +32,17 @@ procs:
     autostart: false
     stop: SIGINT
 
-  SITL_SIMULINK_Baseline:
+  SITL_SIMULINK_Baseline: #lauch file for baseline PID
     shell: /bin/bash -c "source /opt/ros/jazzy/setup.bash && source install/local_setup.bash && ros2 launch erocket sitl_simulink_baseline.launch.py"
     autostart: false
     stop: SIGINT
 
-  Offboard_Generic:
+  Offboard_Generic: #lauch file for the Nonlinear PID
     shell: /bin/bash -c "source /opt/ros/jazzy/setup.bash && source install/local_setup.bash && ros2 launch erocket offboard_computer_generic.launch.py"
     autostart: false
     stop: SIGINT
 
-  SITL_SIMULINK_Generic:
+  SITL_SIMULINK_Generic: #test ROS 2 code against a Simulink physics model
     shell: /bin/bash -c "source /opt/ros/jazzy/setup.bash && source install/local_setup.bash && ros2 launch erocket sitl_simulink_generic.launch.py"
     autostart: false
     stop: SIGINT
@@ -56,7 +57,7 @@ procs:
     autostart: false
     stop: SIGINT
 
-  Plot_Juggler:
+  Plot_Juggler: #replay using plotjuggler
     shell: /bin/bash -c "source /opt/ros/jazzy/setup.bash && source install/local_setup.bash && ros2 run plotjuggler plotjuggler"
     autostart: true
     stop: SIGINT
@@ -65,12 +66,13 @@ procs:
     shell: /bin/bash --rcfile "source /opt/ros/jazzy/setup.bash && source install/local_setup.bash"
     autostart: true
 
-  ROS_Bag:
+  ROS_Bag: # to start recording using rosbag
     shell: /bin/bash -c "source /opt/ros/jazzy/setup.bash && source install/local_setup.bash && ros2 bag record -a"
     autostart: false
     stop: SIGINT
 
-  MAVLINK_Forwarder:
+  MAVLINK_Forwarder: #mavproxy.py to grab standard MAVLink telemetry from a serial port (ttyAMA10) and send it via Wi-Fi (udpbcast:192.168.1.255)
+    # how QGroundControl monitors the rocket
     shell: /bin/bash -c "mavproxy.py --master=/dev/ttyAMA10 --baudrate=57600 --aircraft="e-rocket" --out=udpbcast:192.168.1.255:14550"
     autostart: false
     stop: SIGINT
