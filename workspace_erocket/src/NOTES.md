@@ -342,3 +342,13 @@ L  [error opening dir]
 
 > [!NOTE]
 > See this demos and try to figure them out be myself.
+
+## Update about mprocs.yaml
+
+mprocs.yaml orchestrator controls the rocket.
+
+Pedro registered a parameter_callback() function using add_on_set_parameters_callback. This means the node is actively listening to the ROS 2 network for configuration changes.
+When you click the START_MISSION button in mprocs, it runs:
+ros2 param set /mission offboard.flight_mode 4
+
+The parameter callback inside mission.cpp intercepts that 4, translates it to FlightMode::IN_MISSION, and calls request_flight_mode(new_flight_mode). The node then publishes a flight mode switch message, officially transitioning the rocket into the active mission state.
