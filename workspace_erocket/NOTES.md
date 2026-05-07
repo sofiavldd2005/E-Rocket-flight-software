@@ -66,92 +66,13 @@ ros2 param set /mission offboard.flight_mode 3
 
 Sensors $\rightarrow$ baseline_pid_controller.cpp $\rightarrow$ allocator.hpp $\rightarrow$ PX4 Hardware
 
+ROS2 publishes (t=0)
+  → DDS serializes message
+  → MAVLink or uORB bridge transfers over serial/UDP
+  → PX4 receives & processes
+  → STM32 PWM output (t=5-50ms depending on loop rate)
+
 ---
-
-## Complaints from Gemini - TODO actualy read the complaints and if they make sense
-
-1. The static Time Trap (Massive Bug)
-In baseline_pid_controller.cpp, inside the FlightMode::ARM state, Pedro wrote this to trigger the servo wiggle:
-
-C++
-static rclcpp::Time t0 = this->get_clock()->now();
-This is a critical bug. Because t0 is declared static, it is only initialized the very first time the system enters the ARM state. If the rocket drops out of ARM and goes back in, t0 does not reset. The logic now - t0 < 3.0s will instantly fail, the rocket won't wiggle, and it will immediately jump to the now - t0 > 4.0s condition. Relying on static local variables inside a state machine loop is a huge red flag.
-
-1. Blocking the ROS 2 Executor
-Look at the constructor of Allocator in allocator.hpp. He wrote a while loop that forces the node to sleep for a full second:
-
-```Cpp
-auto t0 = node->get_clock()->now();
-while (node->get_clock()->now() - t0 < 1s) {
-    publish_servo_pwm();
-    publish_motor_pwm();
-    rclcpp::sleep_for(100ms);
-}
-```
-
-This is a major ROS 2 anti-pattern. Constructors run on the main thread. By putting rclcpp::sleep_for(100ms) in the constructor, he is entirely blocking the ROS executor from spinning. No callbacks can be processed, and no topic subscriptions will update during this time. This should have been handled by a startup timer or a lifecycle node state transition, not a blocking while-loop.
-
-1. Unsafe Math / NaN Propagation
-In allocator.hpp, the physical translation logic is completely missing mathematical safeguards:
-
-```Cpp
-gamma_inner_ = std::asin(input.thrust_vector[1] / thrust_);
-```
-
-If thrust_is exactly 0.0, that is a division by zero. Furthermore, if numerical noise causes input.thrust_vector[1] / thrust_to be 1.000001, std::asin will return NaN. Because the limit_range_servo_pwm function just checks if (servo_pwm > 1.0f), a NaN value will silently bypass the bounds check and get sent straight to the hardware. In Rust, the compiler or a strict Result/Option pattern would have forced him to handle these edge cases. Here, it's just hoping the math stays clean.
-
-1. Dirty Shutdowns
-In baseline_pid_controller.cpp, when the state is FlightMode::ABORT, he calls rclcpp::shutdown(); directly inside the timer callback. This is generally considered terrible practice. It abruptly kills the node from inside a worker thread, which can cause exceptions in the executor or leave network sockets hanging. It's much cleaner to publish a zeroed-out safe state, set a flag, and let the main executor gracefully tear down.
-
-## Here are the most glaring issues in mission.cpp
-
-1. The "Infinite Loop of Death" (Catastrophic Bug)
-Look at what happens in the parameter callback when a user tries to trigger an abort from the ground station:
-
-```Cpp
-else if (param.get_name() == FLIGHT_MODE_PARAM) {
-    uint8_t new_flight_mode = param.as_int();
-    RCLCPP_INFO(this->get_logger(), "Requesting flight mode to: %d", new_flight_mode);
-    request_flight_mode(new_flight_mode);
-
-    while (new_flight_mode == FlightMode::ABORT) {
-        request_flight_mode(FlightMode::ABORT);
-    }
-}
-
-```
-
-If new_flight_mode equals FlightMode::ABORT, it enters a while loop. But request_flight_mode() just publishes a ROS message; it never modifies the new_flight_mode variable.
-This is an infinite loop. The moment you abort the rocket via a parameter change, the entire mission node will completely hang, freezing the parameter callback thread forever and blasting the network with millions of abort messages until the computer crashes.
-
-1. The "Static Variable" Epidemic (Single-Use Rocket)
-We saw this bug in the PID controller, but in mission.cpp, it is everywhere. Pedro has built a state machine that can strictly only be run once.
-
-Look at FlightMode::TAKE_OFF:
-
-```Cpp
-static rclcpp::Time takeoff_start_time = this->get_clock()->now();
-Look at FlightMode::LANDING:
-
-```
-
-```Cpp
-static State initial_landing_state = state_aggregator_->get_state();
-static rclcpp::Time landing_start_time = this->get_clock()->now();
-```
-
-If you arm the rocket, start taking off, realize something is wrong, land, and try to take off again, the rocket will crash. Because these variables are static, they do not reset when you re-enter the state. The math for compute_takeoff() will think the rocket has been taking off for 45 minutes, resulting in a massive, violent setpoint jump that will rip the motors apart.
-A real state machine requires explicit entry and exit transition functions to cleanly reset internal timers and states.
-
-1. Bizarre C++ Syntax (The `#include` placement)
-Look inside the FlightMode::IN_MISSION block in the mission() callback:
-
-```Cpp
-if (trajectory_setpoint_active_) {
-    #include "setpoints.h"
-    static uint32_t index = 0;
-    // ...
-```
 
 He put an `#include` directive inside an if statement, in the middle of a function body.
 While the C++ preprocessor will technically allow this (it just pastes the raw text of the header file right there before compiling), it is a massive anti-pattern. If setpoints.h contains anything other than a simple anonymous array, it will cause scope nightmares. Plus, because of the static uint32_t index = 0; immediately below it, if you ever try to run the trajectory twice, it won't start from the beginning.
