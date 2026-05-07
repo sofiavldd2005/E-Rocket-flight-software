@@ -343,6 +343,12 @@ L  [error opening dir]
 > [!NOTE]
 > See this demos and try to figure them out be myself.
 
+- `state.hpp`: defines the StateAggregator. Its job is to subscribe to four different high-speed PX4 topics, Auto-Conversion: Every time a new VehicleAttitude arrives, it automatically calculates the rotation_matrix and euler_angles
+
+- `attitude_pid` -> basic PID
+
+- `position_pid` -> Outer Loop of the rocket’s control system
+
 ## Update about mprocs.yaml
 
 mprocs.yaml orchestrator controls the rocket.

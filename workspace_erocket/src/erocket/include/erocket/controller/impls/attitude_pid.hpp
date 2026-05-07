@@ -1,154 +1,188 @@
 #pragma once
-#include <rclcpp/rclcpp.hpp>
-#include <erocket/msg/attitude_controller_debug.hpp>
 #include <erocket/constants.hpp>
 #include <erocket/frame_transforms.h>
+#include <erocket/msg/attitude_controller_debug.hpp>
+#include <rclcpp/rclcpp.hpp>
 
-#include <erocket/controller/state.hpp>
-#include <erocket/controller/setpoint.hpp>
-#include <erocket/controller/impls/position_pid.hpp>
-#include <erocket/vehicle_constants.hpp>
 #include <erocket/controller/allocator.hpp>
+#include <erocket/controller/impls/position_pid.hpp>
+#include <erocket/controller/setpoint.hpp>
+#include <erocket/controller/state.hpp>
+#include <erocket/vehicle_constants.hpp>
 
 using erocket::frame_transforms::radians_to_degrees;
 
-class AttitudePIDController
-{
+class AttitudePIDController {
 public:
-    AttitudePIDController(rclcpp::Node* node, rclcpp::QoS qos, std::shared_ptr<StateAggregator> state_aggregator, std::shared_ptr<SetpointAggregator> setpoint_aggregator, std::shared_ptr<VehicleConstants> vehicle_constants): 
-        state_aggregator_(state_aggregator),
+  AttitudePIDController(rclcpp::Node *node, rclcpp::QoS qos,
+                        std::shared_ptr<StateAggregator> state_aggregator,
+                        std::shared_ptr<SetpointAggregator> setpoint_aggregator,
+                        std::shared_ptr<VehicleConstants> vehicle_constants)
+      : state_aggregator_(state_aggregator),
         setpoint_aggregator_(setpoint_aggregator),
-        attitude_controller_debug_publisher_(node->create_publisher<AttitudeControllerDebug>(CONTROLLER_ATTITUDE_DEBUG_TOPIC, qos)),
+        attitude_controller_debug_publisher_(
+            node->create_publisher<AttitudeControllerDebug>(
+                CONTROLLER_ATTITUDE_DEBUG_TOPIC, qos)),
         clock_(std::make_shared<rclcpp::Clock>(RCL_ROS_TIME)),
-        vehicle_constants_{vehicle_constants}
-    {
-        node->declare_parameter<double>(CONTROLLER_ATTITUDE_FREQUENCY_HERTZ_PARAM);
-        double controller_freq = node->get_parameter(CONTROLLER_ATTITUDE_FREQUENCY_HERTZ_PARAM).as_double();
-        if (controller_freq <= 0.0f || std::isnan(controller_freq)) {
-            RCLCPP_ERROR(logger_, "Could not read controller frequency correctly.");
-            throw std::runtime_error("Controller frequency invalid");
-        }
-        dt_ = 1.0 / controller_freq;
+        vehicle_constants_{vehicle_constants} {
+    node->declare_parameter<double>(CONTROLLER_ATTITUDE_FREQUENCY_HERTZ_PARAM);
+    double controller_freq =
+        node->get_parameter(CONTROLLER_ATTITUDE_FREQUENCY_HERTZ_PARAM)
+            .as_double();
+    if (controller_freq <= 0.0f || std::isnan(controller_freq)) {
+      RCLCPP_ERROR(logger_, "Could not read controller frequency correctly.");
+      throw std::runtime_error("Controller frequency invalid");
+    }
+    dt_ = 1.0 / controller_freq;
 
-        node->declare_parameter<std::vector<bool>>(CONTROLLER_ATTITUDE_ACTIVE_PARAM);
-        controller_active_ = node->get_parameter(CONTROLLER_ATTITUDE_ACTIVE_PARAM).as_bool_array();
-        // Safety check
-        if (controller_active_.size() != 3) {
-            RCLCPP_ERROR(logger_, "Controller active vector size is not 3.");
-            throw std::runtime_error("Controller active vector size invalid");
-        }
-        RCLCPP_INFO(logger_, "Controllers: roll: %s, pitch: %s, yaw: %s",
-            controller_active_[0] ? "active" : "off",
-            controller_active_[1] ? "active" : "off",
-            controller_active_[2] ? "active" : "off"
-        );
+    node->declare_parameter<std::vector<bool>>(
+        CONTROLLER_ATTITUDE_ACTIVE_PARAM);
+    controller_active_ =
+        node->get_parameter(CONTROLLER_ATTITUDE_ACTIVE_PARAM).as_bool_array();
+    // Safety check
+    if (controller_active_.size() != 3) {
+      RCLCPP_ERROR(logger_, "Controller active vector size is not 3.");
+      throw std::runtime_error("Controller active vector size invalid");
+    }
+    RCLCPP_INFO(logger_, "Controllers: roll: %s, pitch: %s, yaw: %s",
+                controller_active_[0] ? "active" : "off",
+                controller_active_[1] ? "active" : "off",
+                controller_active_[2] ? "active" : "off");
 
-        node->declare_parameter<std::vector<double>>(CONTROLLER_ATTITUDE_K_P_PARAM);
-        node->declare_parameter<std::vector<double>>(CONTROLLER_ATTITUDE_K_D_PARAM);
-        node->declare_parameter<std::vector<double>>(CONTROLLER_ATTITUDE_K_I_PARAM);
-        k_p_ = Eigen::Map<const Eigen::Vector3d>(node->get_parameter(CONTROLLER_ATTITUDE_K_P_PARAM).as_double_array().data(), 3);
-        k_d_ = Eigen::Map<const Eigen::Vector3d>(node->get_parameter(CONTROLLER_ATTITUDE_K_D_PARAM).as_double_array().data(), 3);
-        k_i_ = Eigen::Map<const Eigen::Vector3d>(node->get_parameter(CONTROLLER_ATTITUDE_K_I_PARAM).as_double_array().data(), 3);
-        // Safety check
-        if (k_p_.size() != 3 || k_d_.size() != 3 || k_i_.size() != 3 || 
-            std::isnan(k_p_[0]) || std::isnan(k_p_[1]) || std::isnan(k_p_[2]) ||
-            std::isnan(k_d_[0]) || std::isnan(k_d_[1]) || std::isnan(k_d_[2]) ||
-            std::isnan(k_i_[0]) || std::isnan(k_i_[1]) || std::isnan(k_i_[2])) {
-            RCLCPP_ERROR(logger_, "Invalid PID gains provided.");
-            throw std::runtime_error("Gains vector invalid");
-        }
-
-        RCLCPP_INFO(logger_, "controller dt: %f", dt_);
-
-        RCLCPP_INFO(logger_, "gains k_p: [%f, %f, %f]", k_p_[0], k_p_[1], k_p_[2]);
-        RCLCPP_INFO(logger_, "gains k_d: [%f, %f, %f]", k_d_[0], k_d_[1], k_d_[2]);
-        RCLCPP_INFO(logger_, "gains k_i: [%f, %f, %f]", k_i_[0], k_i_[1], k_i_[2]);
+    node->declare_parameter<std::vector<double>>(CONTROLLER_ATTITUDE_K_P_PARAM);
+    node->declare_parameter<std::vector<double>>(CONTROLLER_ATTITUDE_K_D_PARAM);
+    node->declare_parameter<std::vector<double>>(CONTROLLER_ATTITUDE_K_I_PARAM);
+    // Eigen::Map to convert a raw C++ array (from ROS 2 parameters) into an
+    // Eigen vector
+    k_p_ = Eigen::Map<const Eigen::Vector3d>(
+        node->get_parameter(CONTROLLER_ATTITUDE_K_P_PARAM)
+            .as_double_array()
+            .data(),
+        3);
+    k_d_ = Eigen::Map<const Eigen::Vector3d>(
+        node->get_parameter(CONTROLLER_ATTITUDE_K_D_PARAM)
+            .as_double_array()
+            .data(),
+        3);
+    k_i_ = Eigen::Map<const Eigen::Vector3d>(
+        node->get_parameter(CONTROLLER_ATTITUDE_K_I_PARAM)
+            .as_double_array()
+            .data(),
+        3);
+    // Safety check
+    if (k_p_.size() != 3 || k_d_.size() != 3 || k_i_.size() != 3 ||
+        std::isnan(k_p_[0]) || std::isnan(k_p_[1]) || std::isnan(k_p_[2]) ||
+        std::isnan(k_d_[0]) || std::isnan(k_d_[1]) || std::isnan(k_d_[2]) ||
+        std::isnan(k_i_[0]) || std::isnan(k_i_[1]) || std::isnan(k_i_[2])) {
+      RCLCPP_ERROR(logger_, "Invalid PID gains provided.");
+      throw std::runtime_error("Gains vector invalid");
     }
 
-    /*
-        * @brief Compute the control input based on the PID controller formula
-        * @return The computed control input
-    */
-    AllocatorInput compute(double u3) {
-        auto state = state_aggregator_->get_state();
-        auto setpoint = setpoint_aggregator_->get_attitude_setpoint();
+    RCLCPP_INFO(logger_, "controller dt: %f", dt_);
 
-        Eigen::Vector3d attitude = state.euler_angles;
-        attitude[2] -= origin_yaw_;
+    RCLCPP_INFO(logger_, "gains k_p: [%f, %f, %f]", k_p_[0], k_p_[1], k_p_[2]);
+    RCLCPP_INFO(logger_, "gains k_d: [%f, %f, %f]", k_d_[0], k_d_[1], k_d_[2]);
+    RCLCPP_INFO(logger_, "gains k_i: [%f, %f, %f]", k_i_[0], k_i_[1], k_i_[2]);
+  }
 
-        Eigen::Vector3d error_p = setpoint.attitude - attitude;
+  /*
+   * @brief Compute the control input based on the PID controller formula
+   * @return The computed control input as an AllocatorInput message, which
+   * includes the desired
+   */
+  // 1. Get current state (quaternion → Euler)
+  // 2. Calculate error: setpoint - actual
+  // 3. PID formula: τ = Kp*e + Kd*(-ω) + Ki*∫e dt
+  // 4. Convert torques → thrust vector components
+  // 5. Return to allocator
+  AllocatorInput compute(double u3) {
+    auto state = state_aggregator_->get_state();
+    auto setpoint = setpoint_aggregator_->get_attitude_setpoint();
 
-        // Update the integrated error
-        integrated_error_ += error_p * dt_; 
+    Eigen::Vector3d attitude = state.euler_angles;
+    attitude[2] -= origin_yaw_;
 
-        // Compute PD terms
-        Eigen::Vector3d p_term =  k_p_.cwiseProduct(error_p);
-        Eigen::Vector3d d_term = -k_d_.cwiseProduct(state.angular_rate);
-        Eigen::Vector3d i_term =  k_i_.cwiseProduct(integrated_error_);
-        tau_bar_ = p_term + d_term + i_term;
+    // Where am I, where do I want to be
+    Eigen::Vector3d error_p = setpoint.attitude - attitude;
 
-        // Apply controller active flags
-        for (int i = 0; i < 3; ++i) {
-            if (!controller_active_[i]) {
-                tau_bar_[i] = 0.0;
-            }
-        }
+    // Update the integrated error
+    integrated_error_ += error_p * dt_;
 
-        output_.thrust_vector[0] =   (vehicle_constants_->moment_of_inertia_ / vehicle_constants_->lever_arm_) * tau_bar_[1];
-        output_.thrust_vector[1] = - (vehicle_constants_->moment_of_inertia_ / vehicle_constants_->lever_arm_) * tau_bar_[0];
-        output_.thrust_vector[2] = u3;
+    // Compute PD terms
+    Eigen::Vector3d p_term = k_p_.cwiseProduct(error_p);
+    Eigen::Vector3d d_term = -k_d_.cwiseProduct(state.angular_rate);
+    Eigen::Vector3d i_term = k_i_.cwiseProduct(integrated_error_);
+    tau_bar_ = p_term + d_term + i_term;
 
-        output_.tau_delta_bar = tau_bar_[2];
-
-        publish_debug();
-        return output_;
+    // Apply controller active flags
+    for (int i = 0; i < 3; ++i) {
+      if (!controller_active_[i]) {
+        tau_bar_[i] = 0.0;
+      }
     }
 
-    bool are_all_controllers_active() {
-        return controller_active_[0] && controller_active_[1] && controller_active_[2];
-    }
+    output_.thrust_vector[0] = (vehicle_constants_->moment_of_inertia_ /
+                                vehicle_constants_->lever_arm_) *
+                               tau_bar_[1];
+    output_.thrust_vector[1] = -(vehicle_constants_->moment_of_inertia_ /
+                                 vehicle_constants_->lever_arm_) *
+                               tau_bar_[0];
+    output_.thrust_vector[2] = u3;
+
+    output_.tau_delta_bar = tau_bar_[2];
+
+    publish_debug();
+    return output_;
+  }
+
+  bool are_all_controllers_active() {
+    return controller_active_[0] && controller_active_[1] &&
+           controller_active_[2];
+  }
 
 private:
-    std::vector<bool> controller_active_;
+  std::vector<bool> controller_active_;
 
-    std::shared_ptr<StateAggregator> state_aggregator_;
-    std::shared_ptr<SetpointAggregator> setpoint_aggregator_;
-    Eigen::Vector3d k_p_;
-    Eigen::Vector3d k_d_;
-    Eigen::Vector3d k_i_;
-    Eigen::Vector3d integrated_error_ = Eigen::Vector3d::Zero();
-    double dt_;
-    AllocatorInput output_;
-    Eigen::Vector3d tau_bar_;
+  std::shared_ptr<StateAggregator> state_aggregator_;
+  std::shared_ptr<SetpointAggregator> setpoint_aggregator_;
+  Eigen::Vector3d k_p_;
+  Eigen::Vector3d k_d_;
+  Eigen::Vector3d k_i_;
+  Eigen::Vector3d integrated_error_ = Eigen::Vector3d::Zero();
+  double dt_;
+  AllocatorInput output_;
+  Eigen::Vector3d tau_bar_;
 
-    double origin_yaw_ = 0.0;
+  double origin_yaw_ = 0.0;
 
-    rclcpp::Publisher<AttitudeControllerDebug>::SharedPtr attitude_controller_debug_publisher_;
+  rclcpp::Publisher<AttitudeControllerDebug>::SharedPtr
+      attitude_controller_debug_publisher_;
 
-    rclcpp::Clock::SharedPtr clock_;
-    rclcpp::Logger logger_ = rclcpp::get_logger("attitude_pid_controller");
-    std::shared_ptr<VehicleConstants> vehicle_constants_;
+  rclcpp::Clock::SharedPtr clock_;
+  rclcpp::Logger logger_ = rclcpp::get_logger("attitude_pid_controller");
+  std::shared_ptr<VehicleConstants> vehicle_constants_;
 
-    void publish_debug() {
-        auto state = state_aggregator_->get_state();
-        auto setpoint = setpoint_aggregator_->get_attitude_setpoint();
+  void publish_debug() {
+    auto state = state_aggregator_->get_state();
+    auto setpoint = setpoint_aggregator_->get_attitude_setpoint();
 
-        AttitudeControllerDebug msg;
-        msg.stamp = clock_->now();
+    AttitudeControllerDebug msg;
+    msg.stamp = clock_->now();
 
-        msg.roll_angle = radians_to_degrees(state.euler_angles[0]);
-        msg.roll_angular_velocity = radians_to_degrees(state.angular_rate[0]);
-        msg.roll_angle_setpoint = radians_to_degrees(setpoint.attitude[0]);
+    msg.roll_angle = radians_to_degrees(state.euler_angles[0]);
+    msg.roll_angular_velocity = radians_to_degrees(state.angular_rate[0]);
+    msg.roll_angle_setpoint = radians_to_degrees(setpoint.attitude[0]);
 
-        msg.pitch_angle = radians_to_degrees(state.euler_angles[1]);
-        msg.pitch_angular_velocity = radians_to_degrees(state.angular_rate[1]);
-        msg.pitch_angle_setpoint = radians_to_degrees(setpoint.attitude[1]);
+    msg.pitch_angle = radians_to_degrees(state.euler_angles[1]);
+    msg.pitch_angular_velocity = radians_to_degrees(state.angular_rate[1]);
+    msg.pitch_angle_setpoint = radians_to_degrees(setpoint.attitude[1]);
 
-        msg.yaw_angle = radians_to_degrees(state.euler_angles[2]);
-        msg.yaw_angular_velocity = radians_to_degrees(state.angular_rate[2]);
-        msg.yaw_angle_setpoint = radians_to_degrees(setpoint.attitude[2] + origin_yaw_);
-        Eigen::Map<Eigen::Vector3d>(msg.tau_bar.data()) = tau_bar_;
-        
-        attitude_controller_debug_publisher_->publish(msg);
-    }
+    msg.yaw_angle = radians_to_degrees(state.euler_angles[2]);
+    msg.yaw_angular_velocity = radians_to_degrees(state.angular_rate[2]);
+    msg.yaw_angle_setpoint =
+        radians_to_degrees(setpoint.attitude[2] + origin_yaw_);
+    Eigen::Map<Eigen::Vector3d>(msg.tau_bar.data()) = tau_bar_;
+
+    attitude_controller_debug_publisher_->publish(msg);
+  }
 };
