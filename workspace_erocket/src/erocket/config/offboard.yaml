@@ -24,19 +24,19 @@
           frequency_hertz: 50.
           gains:
             #   Roll, Pitch, Yaw
-            k_p: [5.0, 5.0, 5.0]
+            k_p: [5.0, 5.0, 5.0] # instead of rewriting the C++ code to implement proper integral anti-windup clamping, he just turned off the I term entirely for the X and y?
             k_d: [2.0, 2.0, 2.0]
             k_i: [0.0, 0.0, 0.5]
-        position: 
+        position:
           active: true
           frequency_hertz: 50.
           gains:
-            k_p:  [3.0, 3.0, 8.5]   # Proportional gain
-            k_d:  [2.5, 2.5, 3.0]   # Derivative gain
-            k_i:  [0.2, 0.2, 1.0]   # Integral gain
-            k_ff: [1.0, 1.0, 1.0]   # Feedforward gain
+            k_p: [3.0, 3.0, 8.5] # Proportional gain
+            k_d: [2.5, 2.5, 3.0] # Derivative gain
+            k_i: [0.2, 0.2, 1.0] # Integral gain
+            k_ff: [1.0, 1.0, 1.0] # Feedforward gain
             min_output: [-20., -20., -20.] # Minimum output of each PID
-            max_output: [ 20.,  20.,  20.]
+            max_output: [20., 20., 20.]
         generic:
           frequency_hertz: 100.
       mission:

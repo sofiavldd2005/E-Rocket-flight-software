@@ -2,7 +2,7 @@
 
 - [X] Setpoint receives 3d input (roll, pitch, yaw)
 - [X] Bash script to convert ros2 bag into csv / plotting
-    - Uses Plot Juggler
+  - Uses Plot Juggler
 - [X] Adding sitl
 
 - [?] Adding mocap package
@@ -11,7 +11,7 @@
 
 - [X] Test abort command
 - [X] Use frame conversions library instead of chatgpt code (quaternion_to_euler_radians)
-    - Frame conversions library quaterion to euler does not work. Using Wikipedia formula instead. 
+  - Frame conversions library quaterion to euler does not work. Using Wikipedia formula instead.
 - [X] Increase publish message rate on px4
 
 ---
@@ -23,11 +23,11 @@
 - [X] Create Euler angles help functions
 - [X] Create Allocation class
 - [X] Removing inderect connection controller <-> px4 and controller <-> simulator
-    - Transform message mappping to mocap forwarder
+  - Transform message mappping to mocap forwarder
 - [X] Fix mocap implementation (including test)
 - [?] Refactor Mission to interact directly with px4
-    - Remove flight mode
-    -> Not possible! Flight Mode needs to be a seperate node! 
+  - Remove flight mode
+    -> Not possible! Flight Mode needs to be a seperate node!
 - [X] Setpoint to attitude degrees
 - [X] Sin wave trajectory for attitude
 - [X] Add position setpoint
@@ -36,7 +36,7 @@
 # Before testing Andre's Controller
 
 - [X] Add matrix library
-    - Can Eigen3 be used?
+  - Can Eigen3 be used?
 
 ## Mission
 
@@ -58,7 +58,7 @@ Controller is generic, but Allocator is specific! receives forces and torques
     }
     ```
 
-    - Setpoints exists in c5, and uses position instead of translation
+  - Setpoints exists in c5, and uses position instead of translation
 
 - [?] Controller output - torques + forces
 
@@ -78,11 +78,11 @@ Controller is generic, but Allocator is specific! receives forces and torques
     }
     ```
 
-- [ ] Integrator class 
+- [ ] Integrator class
 - [ ] Reference frame transform class
-    - .to_ned()
-    - .to_enu()
-    - ...
+  - .to_ned()
+  - .to_enu()
+  - ...
 
 ## New Controller-specific
 
@@ -90,24 +90,24 @@ Controller is generic, but Allocator is specific! receives forces and torques
 
 ## Flight Mode
 
-- [X] Create a no-legs-only-rope-specific flight mode sequence... 
+- [X] Create a no-legs-only-rope-specific flight mode sequence...
 - [X] New leg-specific flight mode sequence
-    - Pre-Arm
-        - servo test
-        - 4s to switch
-    - Arm
-        - Liga Motores (0% mby) / ramp-up
-        - Save z (ground altitude)
-        - Comando to switch?...
-    - Take Off
-        - Function that generates the trajectory using a transition function?... That thing used in animation
-        - Uses controller, generates the setpoints
-    - Mission
-        - Sets position as origin, and uses it for the trajectory
-        - Uses the compile-time trajectory generated using the python script
-    - Landing
-        - Function that uses the current xy position and sets target to arm z altitude
-        - Uses another transition function - sends z, dz, ddz
+  - Pre-Arm
+    - servo test
+    - 4s to switch
+  - Arm
+    - Liga Motores (0% mby) / ramp-up
+    - Save z (ground altitude)
+    - Comando to switch?...
+  - Take Off
+    - Function that generates the trajectory using a transition function?... That thing used in animation
+    - Uses controller, generates the setpoints
+  - Mission
+    - Sets position as origin, and uses it for the trajectory
+    - Uses the compile-time trajectory generated using the python script
+  - Landing
+    - Function that uses the current xy position and sets target to arm z altitude
+    - Uses another transition function - sends z, dz, ddz
 
 ## Hardware
 
@@ -126,4 +126,4 @@ Controller is generic, but Allocator is specific! receives forces and torques
 - [ ] Heatsink RPi
 
 - [ ] Implementation of coupled controller (Pedro Santos)
-- [ ] Improve simulator to receive servos and motors and calculate the orientation, velocity, position, ... 
+- [ ] Improve simulator to receive servos and motors and calculate the orientation, velocity, position, ...

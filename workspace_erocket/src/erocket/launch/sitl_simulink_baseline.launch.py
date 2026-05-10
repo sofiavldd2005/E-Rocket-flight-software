@@ -9,47 +9,49 @@ import os
 
 # Get the parent directory of the directory containing this launch file
 launch_file_dir = os.path.dirname(os.path.realpath(__file__))
-config_file = os.path.realpath(os.path.join(
-    launch_file_dir,
-    '../../../../../src/erocket/config/offboard.yaml'
-))
+config_file = os.path.realpath(
+    os.path.join(launch_file_dir, "../../../../../src/erocket/config/offboard.yaml")
+)
 
 # SITL simulation parameters!
+# if this simulation code run on the actual rocket hardware, the motors are locked out
 additional_params = {
-    'servo_active': False,
-    'motor_active': False,
+    "servo_active": False,
+    "motor_active": False,
 }
+
 
 def generate_launch_description():
 
     baseline_pid_controller_node = Node(
-        package='erocket',
-        executable='baseline_pid_controller',
-        output='screen',
+        package="erocket",
+        executable="baseline_pid_controller",
+        output="screen",
         shell=True,
         parameters=[config_file, additional_params],
     )
 
     mission_node = Node(
-        package='erocket',
-        executable='mission',
-        output='screen',
+        package="erocket",
+        executable="mission",
+        output="screen",
         shell=True,
         parameters=[config_file, additional_params],
     )
 
     mock_flight_mode_node = Node(
-        package='erocket',
-        executable='mock_flight_mode',
-        output='screen',
+        package="erocket",
+        executable="mock_flight_mode",
+        output="screen",
         shell=True,
-        arguments=['--ros-args', '--log-level', 'warn'],
+        arguments=["--ros-args", "--log-level", "warn"],
         parameters=[config_file, additional_params],
     )
 
-
-    return LaunchDescription([
-        baseline_pid_controller_node,
-        mission_node,
-        mock_flight_mode_node,
-    ])
+    return LaunchDescription(
+        [
+            baseline_pid_controller_node,
+            mission_node,
+            mock_flight_mode_node,
+        ]
+    )
