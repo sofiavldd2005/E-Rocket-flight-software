@@ -28,6 +28,11 @@ tree -L 1
 > Investigate this
 
 - `mcprocs.yaml` -> Instead of start the DDS bridge, and the ROS nodes manualy, Pedro is using mprocs (a tmux) to launch the entire vehicle architecture at once.
+  - Pedro registered a parameter_callback() function using add_on_set_parameters_callback. This means the node is listening to the ROS 2 network for configuration changes.
+When you click the START_MISSION button in mprocs, it runs:
+ros2 param set /mission offboard.flight_mode 4
+
+The parameter callback inside mission.cpp intercepts that 4, translates it to FlightMode::IN_MISSION, and calls request_flight_mode(new_flight_mode). The node then publishes a flight mode switch message, officially transitioning the rocket into the active mission state.
 
 > [!NOTE]
 > Pedro is using bash, i don't like bash, i use zsh, change all the source cms to `.zsh`, if I actualy change to zsh.
@@ -73,23 +78,3 @@ ROS2 publishes (t=0)
   → STM32 PWM output (t=5-50ms depending on loop rate)
 
 ---
-
-He put an `#include` directive inside an if statement, in the middle of a function body.
-While the C++ preprocessor will technically allow this (it just pastes the raw text of the header file right there before compiling), it is a massive anti-pattern. If setpoints.h contains anything other than a simple anonymous array, it will cause scope nightmares. Plus, because of the static uint32_t index = 0; immediately below it, if you ever try to run the trajectory twice, it won't start from the beginning.
-
-1. Asynchronous Aborts (Unsafe Design)
-Look at how the emergency switch triggers an abort:
-
-```Cpp
-if (emergency_switch_.emergency_switch_on()) {
-    if (flight_mode_.load() != FlightMode::ABORT) {
-        RCLCPP_ERROR(this->get_logger(), "Emergency switch activated! Aborting mission...");
-        request_flight_mode(FlightMode::ABORT);
-    }
-    return;
-}
-
-```
-
-When the emergency switch is hit, it calls request_flight_mode(FlightMode::ABORT). As we know, that function merely publishes a ROS message to the FLIGHT_MODE_SET_TOPIC.
-This means the "Kill Switch" relies on the DDS network stack. If the network is congested, or if the flight_mode_get_subscriber_ callback is delayed, the rocket will keep flying. A true emergency kill switch should directly and synchronously alter the state memory, bypass the network, or cut hardware power.
