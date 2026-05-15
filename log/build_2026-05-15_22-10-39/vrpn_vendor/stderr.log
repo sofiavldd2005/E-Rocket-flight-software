@@ -1,4 +1,0 @@
-Cloning into 'src'...
-gmake[2]: *** [CMakeFiles/vrpn.dir/build.make:98: vrpn-prefix/src/vrpn-stamp/vrpn-download] Interrupt
-gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/vrpn.dir/all] Interrupt
-gmake: *** [Makefile:146: all] Interrupt
