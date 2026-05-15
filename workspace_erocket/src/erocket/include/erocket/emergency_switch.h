@@ -6,8 +6,18 @@
 using namespace erocket::constants::emergency;
 using namespace px4_msgs::msg;
 
+/**
+ * @class EmergencySwitch
+ * @brief Subscribes to the actuator armed status to monitor for a manual lockdown (kill switch).
+ */
 class EmergencySwitch {
 public:
+  /**
+   * @brief Construct a new Emergency Switch
+   * 
+   * @param node The parent ROS 2 node.
+   * @param qos The QoS profile used for the subscription.
+   */
   EmergencySwitch(rclcpp::Node *node, rclcpp::QoS qos)
       : // // It creates a ROS 2 subscription to the PX4 flight controller's
         // ActuatorArmed topic
@@ -23,6 +33,10 @@ public:
               }
             })} {}
 
+  /**
+   * @brief Check if the emergency switch has been triggered.
+   * @return true if manual lockdown is active, false otherwise.
+   */
   bool emergency_switch_on() { return emergency_switch_on_; }
   // If mission.cpp (which includes this header) sees emergency_switch_on()
   // return true, it requests FlightMode::ABORT.

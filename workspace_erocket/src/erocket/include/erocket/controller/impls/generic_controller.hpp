@@ -13,9 +13,22 @@ using namespace erocket::frame_transforms;
 using namespace erocket::msg;
 using namespace erocket::constants::controller_generic;
 
+/**
+ * @class GenericController
+ * @brief Template class for implementing custom user-defined control systems.
+ */
 class GenericController
 {
 public:
+    /**
+     * @brief Construct a new Generic Controller
+     * 
+     * @param node The parent ROS 2 Node.
+     * @param qos The QoS profile used for debug publishers.
+     * @param state_aggregator Shared pointer to the StateAggregator.
+     * @param setpoint_aggregator Shared pointer to the SetpointAggregator.
+     * @param vehicle_constants Shared pointer to the vehicle constants.
+     */
     GenericController(
         rclcpp::Node* node, 
         rclcpp::QoS qos, 
@@ -35,10 +48,10 @@ public:
         dt_ = 1.0 / controller_freq;
     }
 
-    /*
-        * @brief Compute the control input based on the PID controller formula
-        * @return The computed control input
-    */
+    /**
+     * @brief Compute the control input based on the custom controller logic.
+     * @return The computed control input as an AllocatorInput.
+     */
     AllocatorInput compute() {
         auto state = state_aggregator_->get_state();
         auto setpoint = setpoint_aggregator_->get_attitude_setpoint();

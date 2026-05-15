@@ -12,8 +12,21 @@
 
 using erocket::frame_transforms::radians_to_degrees;
 
+/**
+ * @class AttitudePIDController
+ * @brief Computes mathematical torque commands required to reach a target attitude.
+ */
 class AttitudePIDController {
 public:
+  /**
+   * @brief Construct a new Attitude PID Controller
+   * 
+   * @param node The parent ROS 2 Node.
+   * @param qos The QoS profile used for debug publishers.
+   * @param state_aggregator Shared pointer to the StateAggregator.
+   * @param setpoint_aggregator Shared pointer to the SetpointAggregator.
+   * @param vehicle_constants Shared pointer to the vehicle constants.
+   */
   AttitudePIDController(rclcpp::Node *node, rclcpp::QoS qos,
                         std::shared_ptr<StateAggregator> state_aggregator,
                         std::shared_ptr<SetpointAggregator> setpoint_aggregator,
@@ -85,10 +98,10 @@ public:
     RCLCPP_INFO(logger_, "gains k_i: [%f, %f, %f]", k_i_[0], k_i_[1], k_i_[2]);
   }
 
-  /*
+  /**
    * @brief Compute the control input based on the PID controller formula
-   * @return The computed control input as an AllocatorInput message, which
-   * includes the desired
+   * @param u3 The required Z-axis thrust magnitude (calculated by the position controller).
+   * @return The computed control input as an AllocatorInput message.
    */
   // 1. Get current state (quaternion → Euler)
   // 2. Calculate error: setpoint - actual
@@ -135,6 +148,10 @@ public:
     return output_;
   }
 
+  /**
+   * @brief Check if all attitude PID controllers (roll, pitch, yaw) are active.
+   * @return true if all are active, false otherwise.
+   */
   bool are_all_controllers_active() {
     return controller_active_[0] && controller_active_[1] &&
            controller_active_[2];

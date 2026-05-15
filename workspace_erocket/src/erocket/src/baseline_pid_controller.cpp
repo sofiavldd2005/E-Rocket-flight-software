@@ -23,10 +23,22 @@ using namespace erocket::constants::flight_mode;
 using namespace erocket::frame_transforms;
 
 /**
- * @brief Node that runs the controller for a 1-degree-of-freedom system
+ * @class BaselinePIDController
+ * @brief ROS 2 node that runs the baseline PID control system.
+ *
+ * This node handles the attitude and position control using a PID approach.
+ * It interfaces with state and setpoint aggregators and allocates
+ * thrust/actuation commands based on the current flight mode.
  */
 class BaselinePIDController : public rclcpp::Node {
 public:
+  /**
+   * @brief Construct a new Baseline PID Controller node
+   *
+   * Initializes the publishers, subscribers, timers, and controllers necessary
+   * to compute and allocate the control signals based on the current flight
+   * mode.
+   */
   explicit BaselinePIDController()
       : Node("baseline_pid_controller"),
         qos_profile_{rmw_qos_profile_sensor_data},
@@ -68,35 +80,53 @@ public:
   }
 
 private:
-  rmw_qos_profile_t qos_profile_;
-  rclcpp::QoS qos_;
+  rmw_qos_profile_t
+      qos_profile_; ///< Quality of Service profile for sensor data
+  rclcpp::QoS qos_; ///< ROS 2 QoS object based on qos_profile_
   // The Aggregators sit in the background listening to the ROS 2 topics,
   // constantly updating their internal variables. When the 50 Hz timer fires,
   // the PID controllers asks the Aggregators for the latest known data,
   // completely decoupling the network threads from the math threads. in rust,
   // the shared_ptr would be an Arc<RwLock<State>> ig
-  std::shared_ptr<VehicleConstants> vehicle_constants_;
-  std::shared_ptr<StateAggregator> state_aggregator_;
-  std::shared_ptr<SetpointAggregator> setpoint_aggregator_;
-  AttitudePIDController attitude_controller_;
-  PositionPIDController position_controller_;
+  std::shared_ptr<VehicleConstants>
+      vehicle_constants_; ///< Shared pointer to vehicle-specific physical
+                          ///< constants
+  std::shared_ptr<StateAggregator>
+      state_aggregator_; ///< Aggregates vehicle state data from
+                         ///< sensors/estimators
+  std::shared_ptr<SetpointAggregator>
+      setpoint_aggregator_; ///< Aggregates target setpoints from mission logic
+  AttitudePIDController attitude_controller_; ///< PID controller for vehicle
+                                              ///< attitude (orientation)
+  PositionPIDController
+      position_controller_; ///< PID controller for vehicle position
   // unique_ptr -> Box<T> : Heap-allocated memory, Single owner; move-only. BUT
   // IT CAN BE NULL
   // std::move
-  std::unique_ptr<Allocator> allocator_;
+  std::unique_ptr<Allocator>
+      allocator_; ///< Allocates calculated torques/thrusts to physical
+                  ///< actuators
 
   //!< Time variables
-  rclcpp::TimerBase::SharedPtr controller_timer_;
+  rclcpp::TimerBase::SharedPtr
+      controller_timer_; ///< Timer triggering the main controller loop
 
   //!< Auxiliary functions
   void controller_callback();
 
-  std::atomic<uint8_t> flight_mode_;
-  rclcpp::Subscription<FlightMode>::SharedPtr flight_mode_get_subscriber_;
+  std::atomic<uint8_t> flight_mode_; ///< Thread-safe atomic variable storing
+                                     ///< the current flight mode
+  rclcpp::Subscription<FlightMode>::SharedPtr
+      flight_mode_get_subscriber_; ///< Subscription to flight mode updates
 };
 
 /**
- * @brief Callback function for the controller
+ * @brief Main control loop callback executed periodically by controller_timer_.
+ *
+ * Computes necessary actuation commands based on the current flight mode (e.g.,
+ * ARM, TAKE_OFF, IN_MISSION, LANDING). It fetches data from the state and
+ * setpoint aggregators, evaluates the PID controllers, and sends commands to
+ * the allocator.
  */
 void BaselinePIDController::controller_callback() {
   if (flight_mode_ < FlightMode::ARM) {

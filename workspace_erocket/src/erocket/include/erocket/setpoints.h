@@ -13,6 +13,11 @@
 // 8: dz [m/s]
 // 9: ddz [m/s2]
 
+/**
+ * @brief Pre-calculated trajectory setpoints for the C5 continuous mission.
+ * 
+ * The columns define time, position, velocity, and acceleration for the x, y, and z axes.
+ */
 const double Setpoints[][ 10 ] = {
     { 0.01000000, 0.00000421, 0.00083783, 0.08224046, -0.00000558, -0.00111000, -0.10895647, -0.99998161, 0.00365760, 0.35981598 },
     { 0.02000000, 0.00001665, 0.00164484, 0.07916234, -0.00002206, -0.00217916, -0.10487842, -0.99992724, 0.00719636, 0.34793964 },

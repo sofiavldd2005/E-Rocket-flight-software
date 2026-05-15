@@ -15,6 +15,10 @@ using namespace erocket::constants::controller;
 
 namespace frame_transforms = erocket::frame_transforms;
 
+/**
+ * @struct AllocatorInput
+ * @brief Input variables containing the mathematical commands from the controllers.
+ */
 struct AllocatorInput {
 
   // TODO: see this Eigen stuff
@@ -22,6 +26,10 @@ struct AllocatorInput {
   double tau_delta_bar;
 };
 
+/**
+ * @struct AllocatorOutput
+ * @brief Output PWM values to be sent directly to the PX4 actuators.
+ */
 struct AllocatorOutput {
   double inner_servo_pwm;
   double outer_servo_pwm;
@@ -29,8 +37,19 @@ struct AllocatorOutput {
   double downwards_motor_pwm;
 };
 
+/**
+ * @class Allocator
+ * @brief Maps mathematical control vectors (thrust, torque) to physical actuator PWM signals.
+ */
 class Allocator {
 public:
+  /**
+   * @brief Construct a new Allocator object
+   * 
+   * @param node The parent ROS 2 Node.
+   * @param qos The QoS profile used for publishers.
+   * @param vehicle_constants Shared pointer to the vehicle's physical constants.
+   */
   Allocator(rclcpp::Node *node, rclcpp::QoS qos,
             std::shared_ptr<VehicleConstants> vehicle_constants)
       : vehicle_constants_(vehicle_constants),
@@ -51,6 +70,11 @@ public:
     }
   }
 
+  /**
+   * @brief Computes actuator allocation given the requested mathematical thrust and torque.
+   * 
+   * @param input The requested AllocatorInput containing thrust vector and torque commands.
+   */
   void compute_allocation(AllocatorInput input) {
     input_ = input;
     // thrust vector magnitude computation
@@ -89,6 +113,9 @@ public:
     publish_allocator_debug();
   }
 
+  /**
+   * @brief Sets actuators to a neutral, safe state (zero thrust/angles).
+   */
   void compute_allocation_neutral() {
     output_.inner_servo_pwm = 0.0f;
     output_.outer_servo_pwm = 0.0f;
@@ -100,6 +127,14 @@ public:
     publish_allocator_debug();
   }
 
+  /**
+   * @brief Allows for direct manual control of the actuators, bypassing the PID loops.
+   * 
+   * @param inner_servo_tilt_angle_radians Inner servo tilt angle (radians).
+   * @param outer_servo_tilt_angle_radians Outer servo tilt angle (radians).
+   * @param upwards_motor_thrust_pwm Upwards motor thrust PWM signal.
+   * @param downwards_motor_thrust_pwm Downwards motor thrust PWM signal.
+   */
   void indirect_actuation(double inner_servo_tilt_angle_radians = 0.0f,
                           double outer_servo_tilt_angle_radians = 0.0f,
                           double upwards_motor_thrust_pwm = NAN,

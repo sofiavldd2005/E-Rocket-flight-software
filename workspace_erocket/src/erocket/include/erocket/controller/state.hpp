@@ -11,6 +11,10 @@ namespace frame_transforms = erocket::frame_transforms;
 using namespace px4_msgs::msg;
 using namespace erocket::constants::controller;
 
+/**
+ * @struct State
+ * @brief Represents the aggregated state of the vehicle including raw messages and derived mathematical states.
+ */
 struct State {
   // original messages
   VehicleAttitude attitude;
@@ -34,8 +38,20 @@ struct State {
 };
 
 //subscribe to four different hPX4 topics  into a single State struct for the PID controller to use.
+/**
+ * @class StateAggregator
+ * @brief Subscribes to PX4 state topics and derives mathematical representations (e.g. rotation matrices) for the controllers.
+ */
 class StateAggregator {
 public:
+  /**
+   * @brief Construct a new State Aggregator
+   * 
+   * Initializes subscriptions to attitude, angular rate, local position, and odometry topics.
+   * 
+   * @param node The parent ROS 2 node.
+   * @param qos The QoS profile used for subscriptions.
+   */
   StateAggregator(rclcpp::Node *node, rclcpp::QoS qos)
       // very time a new VehicleAttitude arrives,
       // it automatically calculates the rotation_matrix and euler_angles
@@ -81,6 +97,10 @@ public:
               this->state_.odometry = *msg;
             })} {}
 
+  /**
+   * @brief Get the current aggregated state
+   * @return A copy of the current State struct.
+   */
   const State get_state() const { return state_; }
 
 private:
