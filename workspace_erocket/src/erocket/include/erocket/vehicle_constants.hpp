@@ -5,24 +5,40 @@
 using namespace erocket::constants;
 using namespace erocket::constants::vehicle;
 
+/**
+ * @class VehicleConstants
+ * @brief Stores configuration values and dynamic parameters describing the physical vehicle.
+ * 
+ * This class reads ROS 2 parameters related to the vehicle's mass, inertia, lever arms, 
+ * and actuator limitations (e.g., max PWM, max tilt angles) and stores them for easy access
+ * by the controllers and allocators.
+ */
 class VehicleConstants {
 public:
-    double mass_of_system_;
-    double lever_arm_;
-    double gravitational_acceleration_;
-    double moment_of_inertia_;
+    double mass_of_system_;                 ///< Total mass of the vehicle (kg)
+    double lever_arm_;                      ///< Lever arm distance from CoM to TVC pivot (m)
+    double gravitational_acceleration_;     ///< Local gravitational acceleration (m/s^2)
+    double moment_of_inertia_;              ///< Moment of inertia about the relevant axes (kg*m^2)
 
-    bool servo_active_;
-    bool motor_active_;
-    double servo_max_tilt_angle_degrees_;
-    double default_motor_pwm_;
-    double max_motor_pwm_;
-    double motor_thrust_curve_m_;
-    double motor_thrust_curve_b_;
-    double delta_torque_a_;
-    double delta_torque_b_;
-    double delta_torque_c_;
+    bool servo_active_;                     ///< Flag indicating if the servo actuators are enabled
+    bool motor_active_;                     ///< Flag indicating if the main motor is enabled
+    double servo_max_tilt_angle_degrees_;   ///< Maximum allowable tilt angle for the TVC servos (degrees)
+    double default_motor_pwm_;              ///< Default base PWM sent to the motor
+    double max_motor_pwm_;                  ///< Absolute maximum PWM allowed for the motor
+    double motor_thrust_curve_m_;           ///< Linear slope 'm' of the motor thrust curve
+    double motor_thrust_curve_b_;           ///< Y-intercept 'b' of the motor thrust curve
+    double delta_torque_a_;                 ///< Polynomial coefficient A for the torque curve
+    double delta_torque_b_;                 ///< Polynomial coefficient B for the torque curve
+    double delta_torque_c_;                 ///< Polynomial coefficient C for the torque curve
 
+    /**
+     * @brief Construct a new Vehicle Constants object
+     * 
+     * Reads all required physical parameters from the ROS 2 parameter server.
+     * Throws an exception if critical parameters are invalid or missing.
+     * 
+     * @param node Pointer to the parent ROS 2 Node used for parameter retrieval.
+     */
     VehicleConstants(rclcpp::Node* node) {
         node->declare_parameter<double>(MASS_OF_SYSTEM);
         mass_of_system_ = node->get_parameter(MASS_OF_SYSTEM).as_double();

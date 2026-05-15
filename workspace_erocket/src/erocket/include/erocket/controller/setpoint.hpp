@@ -1,5 +1,6 @@
 #pragma once
 #include <rclcpp/rclcpp.hpp>
+#include <Eigen/Dense>
 #include <erocket/msg/setpoint_c5.hpp>
 #include <geometry_msgs/msg/vector3_stamped.hpp>
 #include <erocket/constants.hpp>
@@ -8,6 +9,10 @@ using namespace geometry_msgs::msg;
 using namespace erocket::msg;
 using namespace erocket::constants::setpoint;
 
+/**
+ * @struct PositionSetpoint
+ * @brief Represents a mathematical trajectory setpoint for position control.
+ */
 struct PositionSetpoint {
     // derived states
     Eigen::Vector3d position;
@@ -20,14 +25,28 @@ struct PositionSetpoint {
     double yaw_acceleration;
 };
 
+/**
+ * @struct AttitudeSetpoint
+ * @brief Represents a mathematical setpoint for attitude control.
+ */
 struct AttitudeSetpoint {
     // derived states
     Eigen::Vector3d attitude; // roll, pitch, yaw in radians
 };
 
+/**
+ * @class SetpointAggregator
+ * @brief Aggregates trajectory and static setpoint messages into unified structs for the controllers.
+ */
 class SetpointAggregator
 {
 public:
+    /**
+     * @brief Construct a new Setpoint Aggregator
+     * 
+     * @param node The parent ROS 2 node.
+     * @param qos The QoS profile for the setpoint subscriptions.
+     */
     SetpointAggregator(rclcpp::Node* node, rclcpp::QoS qos) :
     position_setpoint_sub_{node->create_subscription<SetpointC5>(
         CONTROLLER_INPUT_SETPOINT_C5_TOPIC, qos,
@@ -86,8 +105,22 @@ public:
     )}
     {}
 
+    /**
+     * @brief Get the current position setpoint
+     * @return The active PositionSetpoint.
+     */
     PositionSetpoint get_position_setpoint() const { return pos_setpoint_; }
+
+    /**
+     * @brief Get the current attitude setpoint
+     * @return The active AttitudeSetpoint.
+     */
     AttitudeSetpoint get_attitude_setpoint() const { return att_setpoint_; }
+
+    /**
+     * @brief Manually override the current attitude setpoint
+     * @param att_setpoint The new AttitudeSetpoint to apply.
+     */
     void set_attitude_setpoint(const AttitudeSetpoint& att_setpoint) { att_setpoint_ = att_setpoint; }
 
 private:

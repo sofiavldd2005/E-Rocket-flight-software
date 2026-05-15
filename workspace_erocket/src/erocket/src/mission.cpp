@@ -27,11 +27,22 @@ using namespace erocket::constants::takeoff_landing;
 using namespace erocket::constants::emergency;
 
 /**
- * @brief PX4 ROS2 Communication Node is responsible for sending and receiving
- * commands to and from the PX4.
+ * @class Mission
+ * @brief ROS 2 node responsible for high-level flight state logic and
+ * trajectory generation.
+ *
+ * Generates mathematical setpoints (position, velocity, acceleration, etc.) for
+ * the controller to track, and oversees transitions between flight modes (e.g.,
+ * INIT to PRE_ARM to TAKE_OFF).
  */
 class Mission : public rclcpp::Node {
 public:
+  /**
+   * @brief Construct a new Mission node
+   *
+   * Initializes ROS 2 timers, publishers, subscribers, parameters, and the
+   * emergency switch.
+   */
   Mission()
       : Node("mission"), flight_mode_{FlightMode::INIT},
         qos_profile_{rmw_qos_profile_sensor_data},
@@ -107,50 +118,101 @@ public:
   }
 
 private:
-  std::atomic<uint8_t> flight_mode_;
+  std::atomic<uint8_t> flight_mode_; ///< Current flight mode atomic variable
 
-  rmw_qos_profile_t qos_profile_;
-  rclcpp::QoS qos_;
+  rmw_qos_profile_t
+      qos_profile_; ///< Quality of Service profile for sensor data
+  rclcpp::QoS qos_; ///< ROS 2 QoS object
 
-  double desired_climb_height_;
-  double takeoff_climb_duration_;
-  double landing_descent_duration_;
-  State ground_state_;
+  double desired_climb_height_;   ///< Configured height for the takeoff climb
+  double takeoff_climb_duration_; ///< Configured duration for the takeoff climb
+  double landing_descent_duration_; ///< Configured duration for the landing
+                                    ///< descent
+  State ground_state_;              ///< Initial state recorded at takeoff
 
-  std::shared_ptr<StateAggregator> state_aggregator_;
+  std::shared_ptr<StateAggregator>
+      state_aggregator_; ///< Aggregates vehicle state data
 
-  std::atomic<bool> flag_flight_mode_requested_;
+  std::atomic<bool>
+      flag_flight_mode_requested_; ///< Flag indicating if a flight mode change
+                                   ///< was requested
   rclcpp::Publisher<erocket::msg::FlightMode>::SharedPtr
-      flight_mode_set_publisher_;
+      flight_mode_set_publisher_; ///< Publisher to request flight mode changes
+
+  /**
+   * @brief Requests a flight mode change by publishing to the flight mode set
+   * topic.
+   * @param flight_mode The requested flight mode.
+   */
   void request_flight_mode(uint8_t flight_mode);
 
   rclcpp::Subscription<erocket::msg::FlightMode>::SharedPtr
-      flight_mode_get_subscriber_;
+      flight_mode_get_subscriber_; ///< Subscriber to get current flight mode
+                                   ///< updates
+
+  /**
+   * @brief Callback for when the flight mode update is received.
+   * @param response The received flight mode message.
+   */
   void response_flight_mode_callback(
       std::shared_ptr<erocket::msg::FlightMode> response);
 
-  rclcpp::TimerBase::SharedPtr flight_mode_timer_;
+  rclcpp::TimerBase::SharedPtr
+      flight_mode_timer_; ///< Timer for the slow loop managing flight modes
+
+  /**
+   * @brief High-level state transition loop executed at 1 Hz.
+   */
   void flight_mode();
 
-  rclcpp::TimerBase::SharedPtr mission_timer_;
+  rclcpp::TimerBase::SharedPtr
+      mission_timer_; ///< Timer for the fast loop generating trajectories
+
+  /**
+   * @brief Trajectory generation and emergency switch monitoring loop executed
+   * at 100 Hz.
+   */
   void mission();
 
-  rclcpp::Publisher<Vector3Stamped>::SharedPtr attitude_setpoint_publisher_;
+  rclcpp::Publisher<Vector3Stamped>::SharedPtr
+      attitude_setpoint_publisher_; ///< Publisher for attitude setpoints
+
+  /**
+   * @brief Publishes a given attitude setpoint in radians.
+   * @param setpoint_radians The target attitude (roll, pitch, yaw) in radians.
+   */
   void publish_attitude_setpoint_radians(Eigen::Vector3d setpoint_radians);
 
   rclcpp::Publisher<Vector3Stamped>::SharedPtr
-      translation_position_setpoint_publisher_;
+      translation_position_setpoint_publisher_; ///< Publisher for position
+                                                ///< translation setpoints
+
+  /**
+   * @brief Publishes a given translation position setpoint in meters.
+   * @param translation_setpoint_meters The target translation position (x, y,
+   * z) in meters.
+   */
   void publish_translation_position_setpoint(
       Eigen::Vector3d translation_setpoint_meters);
 
-  bool trajectory_setpoint_active_;
-  rclcpp::Publisher<SetpointC5>::SharedPtr trajectory_setpoint_publisher_;
+  bool trajectory_setpoint_active_; ///< Indicates whether full trajectory
+                                    ///< tracking is active
+  rclcpp::Publisher<SetpointC5>::SharedPtr
+      trajectory_setpoint_publisher_; ///< Publisher for full C5 trajectories
 
-  OnSetParametersCallbackHandle::SharedPtr parameter_callback_handle_;
+  OnSetParametersCallbackHandle::SharedPtr
+      parameter_callback_handle_; ///< Handle for the parameter change callback
+
+  /**
+   * @brief Callback responding to ROS parameter changes dynamically.
+   * @param parameters List of modified parameters.
+   * @return A SetParametersResult indicating success or failure.
+   */
   rcl_interfaces::msg::SetParametersResult
   parameter_callback(const std::vector<rclcpp::Parameter> &parameters);
 
-  EmergencySwitch emergency_switch_;
+  EmergencySwitch
+      emergency_switch_; ///< Listens to external emergency abort signals
 };
 
 void Mission::flight_mode() {

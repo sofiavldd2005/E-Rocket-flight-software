@@ -22,11 +22,22 @@ using namespace erocket::constants::flight_mode;
 using namespace erocket::frame_transforms;
 
 /**
- * @brief Node that runs the controller for a 1-degree-of-freedom system
+ * @class GenericControllerNode
+ * @brief ROS 2 node that runs a generic, user-defined control system.
+ * 
+ * This node provides a template for implementing custom control algorithms. 
+ * It interfaces with the state and setpoint aggregators, and allocates thrust/actuation commands
+ * based on the current flight mode, similar to the baseline PID controller.
  */
 class GenericControllerNode : public rclcpp::Node
 {
 public:
+    /**
+     * @brief Construct a new Generic Controller Node
+     * 
+     * Initializes the publishers, subscribers, timers, and the generic controller.
+     * The control loop frequency is loaded from ROS parameters.
+     */
 	explicit GenericControllerNode() : Node("generic_controller"),
     qos_profile_{rmw_qos_profile_sensor_data},
     qos_{rclcpp::QoS(rclcpp::QoSInitialization(qos_profile_.history, 5), qos_profile_)},
@@ -56,27 +67,30 @@ public:
 	}
 
 private:
-    rmw_qos_profile_t qos_profile_;
-    rclcpp::QoS qos_;
+    rmw_qos_profile_t qos_profile_; ///< Quality of Service profile for sensor data
+    rclcpp::QoS qos_;               ///< ROS 2 QoS object based on qos_profile_
 
-    std::shared_ptr<VehicleConstants> vehicle_constants_;
-    std::shared_ptr<StateAggregator> state_aggregator_;
-    std::shared_ptr<SetpointAggregator> setpoint_aggregator_;
-    std::unique_ptr<Allocator> allocator_;
-    GenericController generic_controller_;
+    std::shared_ptr<VehicleConstants> vehicle_constants_;     ///< Shared pointer to vehicle-specific physical constants
+    std::shared_ptr<StateAggregator> state_aggregator_;       ///< Aggregates vehicle state data from sensors/estimators
+    std::shared_ptr<SetpointAggregator> setpoint_aggregator_; ///< Aggregates target setpoints from mission logic
+    std::unique_ptr<Allocator> allocator_;                    ///< Allocates calculated torques/thrusts to physical actuators
+    GenericController generic_controller_;                    ///< Instance of the generic custom controller algorithm
 
     //!< Time variables
-    rclcpp::TimerBase::SharedPtr controller_timer_;
+    rclcpp::TimerBase::SharedPtr controller_timer_; ///< Timer triggering the main controller loop
 
 	//!< Auxiliary functions
     void controller_callback();
 
-    std::atomic<uint8_t> flight_mode_;
-    rclcpp::Subscription<FlightMode>::SharedPtr flight_mode_get_subscriber_;
+    std::atomic<uint8_t> flight_mode_; ///< Thread-safe atomic variable storing the current flight mode
+    rclcpp::Subscription<FlightMode>::SharedPtr flight_mode_get_subscriber_; ///< Subscription to flight mode updates
 };
 
 /**
- * @brief Callback function for the controller
+ * @brief Main control loop callback executed periodically by controller_timer_.
+ * 
+ * Computes necessary actuation commands based on the current flight mode (e.g., ARM, 
+ * TAKE_OFF, IN_MISSION, LANDING) using the generic controller and sends commands to the allocator.
  */
 void GenericControllerNode::controller_callback()
 {
