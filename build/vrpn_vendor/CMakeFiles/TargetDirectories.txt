@@ -1,0 +1,10 @@
+/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/CMakeFiles/uninstall.dir
+/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/CMakeFiles/vrpn_vendor_uninstall.dir
+/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/CMakeFiles/vrpn.dir
+/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/CMakeFiles/test.dir
+/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/CMakeFiles/edit_cache.dir
+/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/CMakeFiles/rebuild_cache.dir
+/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/CMakeFiles/list_install_components.dir
+/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/CMakeFiles/install.dir
+/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/CMakeFiles/install/local.dir
+/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/CMakeFiles/install/strip.dir

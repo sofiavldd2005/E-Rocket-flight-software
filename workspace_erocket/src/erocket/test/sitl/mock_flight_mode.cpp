@@ -3,7 +3,6 @@
 #include <erocket/constants.hpp>
 #include <erocket/msg/flight_mode.hpp>
 
-#include <chrono>
 #include <iostream>
 #include <stdint.h>
 #include <string>
@@ -14,8 +13,9 @@ using namespace erocket::msg;
 using namespace erocket::constants::flight_mode;
 
 /**
- * @brief PX4 ROS2 Communication Node is responsible for sending and receiving
- * commands to and from the PX4.
+ * @brief SITL simulation node that bypasses physical hardware arming checks.
+ * It immediately echoes back requested flight modes to simulate successful
+ * transitions.
  */
 class MockFlightMode : public rclcpp::Node {
 public:

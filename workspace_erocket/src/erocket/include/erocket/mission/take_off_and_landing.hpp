@@ -1,5 +1,6 @@
 #pragma once
 #include <rclcpp/rclcpp.hpp>
+#include <Eigen/Dense>
 
 using Eigen::Vector3d;
 

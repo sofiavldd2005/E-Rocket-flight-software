@@ -1,0 +1,23 @@
+[0.028s] Invoking command in '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/px4_msgs': CMAKE_PREFIX_PATH=/opt/ros/jazzy /usr/bin/cmake /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_erocket/src/px4_msgs -DCMAKE_INSTALL_PREFIX=/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/install/px4_msgs
+[0.181s] -- The C compiler identification is GNU 13.3.0
+[0.335s] -- The CXX compiler identification is GNU 13.3.0
+[0.382s] -- Detecting C compiler ABI info
+[0.624s] -- Detecting C compiler ABI info - done
+[0.650s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.651s] -- Detecting C compile features
+[0.651s] -- Detecting C compile features - done
+[0.677s] -- Detecting CXX compiler ABI info
+[0.950s] -- Detecting CXX compiler ABI info - done
+[0.976s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.977s] -- Detecting CXX compile features
+[0.978s] -- Detecting CXX compile features - done
+[0.987s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[1.362s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[1.621s] -- Found builtin_interfaces: 2.0.3 (/opt/ros/jazzy/share/builtin_interfaces/cmake)
+[1.718s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[1.753s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[1.795s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.843s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.887s] -- Found rosidl_default_generators: 1.6.0 (/opt/ros/jazzy/share/rosidl_default_generators/cmake)
+[1.931s] -- Found rosidl_adapter: 4.6.7 (/opt/ros/jazzy/share/rosidl_adapter/cmake)
+[2.325s] Invoked command in '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/px4_msgs' returned '-2': CMAKE_PREFIX_PATH=/opt/ros/jazzy /usr/bin/cmake /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_erocket/src/px4_msgs -DCMAKE_INSTALL_PREFIX=/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/install/px4_msgs

@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/CMakeFiles/vrpn"
+		},
+		{
+			"file" : "/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/CMakeFiles/vrpn.rule"
+		},
+		{
+			"file" : "/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/CMakeFiles/vrpn-complete.rule"
+		},
+		{
+			"file" : "/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/vrpn-prefix/src/vrpn-stamp/vrpn-build.rule"
+		},
+		{
+			"file" : "/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/vrpn-prefix/src/vrpn-stamp/vrpn-configure.rule"
+		},
+		{
+			"file" : "/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/vrpn-prefix/src/vrpn-stamp/vrpn-download.rule"
+		},
+		{
+			"file" : "/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/vrpn-prefix/src/vrpn-stamp/vrpn-install.rule"
+		},
+		{
+			"file" : "/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/vrpn-prefix/src/vrpn-stamp/vrpn-mkdir.rule"
+		},
+		{
+			"file" : "/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/vrpn-prefix/src/vrpn-stamp/vrpn-patch.rule"
+		},
+		{
+			"file" : "/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/build/vrpn_vendor/vrpn-prefix/src/vrpn-stamp/vrpn-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"vrpn"
+		],
+		"name" : "vrpn"
+	}
+}

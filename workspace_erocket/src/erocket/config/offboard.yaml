@@ -1,17 +1,17 @@
 /**:
   ros__parameters:
     offboard:
-      mass_of_system: 1.6
-      lever_arm: 0.27
+      mass_of_system: 1.6 # Total vehicle mass in kg
+      lever_arm: 0.27 # Distance from Center of Mass to TVC gimbal pivot in meters
       gravitational_acceleration: 9.81
-      moment_of_inertia: 0.375
+      moment_of_inertia: 0.375 # Moment of inertia along the transverse axes (kg*m^2)
       vehicle:
-        servo_active: true
-        motor_active: true
-        servo_max_tilt_angle_degrees: 30.
-        default_motor_pwm: 0.40 # active when position controllers are off
-        motor_max_pwm: 0.8
-        motor_thrust_curve: # newtons = (pwm * m + b) / 1000 * g;
+        servo_active: true # Set to false to physically lock servos (e.g. for SITL)
+        motor_active: true # Set to false to physically lock motors
+        servo_max_tilt_angle_degrees: 30. # Hardware constraint on maximum TVC gimbal angle
+        default_motor_pwm: 0.40 # Base throttle active when position controllers are off
+        motor_max_pwm: 0.8 # Hardware constraint on maximum motor PWM
+        motor_thrust_curve: # Physical thrust characterization: newtons = (pwm * m + b) / 1000 * g;
           m: 2696.6
           b: -38.95
         delta_torque: # tau_delta_bar =  a * delta_M + b * M_bar + c
