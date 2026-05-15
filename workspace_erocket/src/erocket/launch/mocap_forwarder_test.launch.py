@@ -1,5 +1,5 @@
 """
-Example to launch a mocap_forwarder listener node.
+Launch the MoCap forwarder node and its associated test node to verify translation.
 """
 
 from launch import LaunchDescription
@@ -17,6 +17,7 @@ def generate_launch_description():
         shell=True
     )
 
+    # Node that bridges VRPN tracking data to PX4 VehicleOdometry
     mocap_forwarder_node = Node(
         package='erocket',
         executable='mocap_forwarder',
@@ -28,6 +29,7 @@ def generate_launch_description():
         ],
     )
 
+    # Node to test the forwarder logic
     mocap_forwarder_test_node = Node(
         package='erocket',
         executable='mocap_forwarder_test',

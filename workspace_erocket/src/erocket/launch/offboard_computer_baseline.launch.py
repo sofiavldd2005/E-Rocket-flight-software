@@ -1,5 +1,6 @@
 """
-Launch a offboard computer with pid controller.
+Launch the core flight stack on the offboard computer using the baseline PID controller.
+This is meant for actual hardware flights.
 """
 
 from launch import LaunchDescription

@@ -1,5 +1,6 @@
 """
-Example to launch a controller listener node.
+Launch the flight stack in a Software-In-The-Loop (SITL) simulation environment.
+This uses the baseline PID controller and mocks hardware interactions safely.
 """
 
 from launch import LaunchDescription
@@ -14,7 +15,8 @@ config_file = os.path.realpath(
 )
 
 # SITL simulation parameters!
-# if this simulation code run on the actual rocket hardware, the motors are locked out
+# These override parameters to ensure actuators (servos and motors) remain locked out
+# so the physical vehicle doesn't arm and spin up if simulation is accidentally run on hardware.
 additional_params = {
     "servo_active": False,
     "motor_active": False,
@@ -23,6 +25,7 @@ additional_params = {
 
 def generate_launch_description():
 
+    # Standard PID controller
     baseline_pid_controller_node = Node(
         package="erocket",
         executable="baseline_pid_controller",
@@ -39,6 +42,7 @@ def generate_launch_description():
         parameters=[config_file, additional_params],
     )
 
+    # Mock flight mode node bypasses hardware arming checks and simulates PX4 states
     mock_flight_mode_node = Node(
         package="erocket",
         executable="mock_flight_mode",

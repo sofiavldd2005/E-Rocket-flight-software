@@ -1,5 +1,5 @@
 """
-Example to launch a controller listener node.
+Launch the generic custom controller in a Software-In-The-Loop (SITL) simulation environment.
 """
 
 from launch import LaunchDescription
@@ -15,6 +15,7 @@ config_file = os.path.realpath(os.path.join(
 ))
 
 # SITL simulation parameters!
+# Locks out servos and motors to prevent accidental hardware actuation.
 additional_params = {
     'servo_active': False,
     'motor_active': False,
@@ -22,6 +23,7 @@ additional_params = {
 
 def generate_launch_description():
 
+    # Start the custom generic controller
     controller_generic_node = Node(
         package='erocket',
         executable='controller_generic',
@@ -38,6 +40,7 @@ def generate_launch_description():
         parameters=[config_file, additional_params],
     )
 
+    # Start the mock flight mode to safely simulate hardware state changes
     mock_flight_mode_node = Node(
         package='erocket',
         executable='mock_flight_mode',

@@ -1,5 +1,6 @@
 """
-Example to launch mocap_interface's vrpn.launch.py and a mocap_forwarder listener node.
+Launch the MoCap forwarder system, which connects to the VRPN motion capture stream
+and translates the data for the PX4 flight controller.
 """
 
 from launch import LaunchDescription

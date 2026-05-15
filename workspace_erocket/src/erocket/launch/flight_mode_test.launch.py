@@ -1,5 +1,5 @@
 """
-Example to launch a flight_mode test node.
+Launch the flight mode node alongside its test suite to verify state machine transitions.
 """
 
 from launch import LaunchDescription
@@ -17,6 +17,7 @@ def generate_launch_description():
         shell=True
     )
 
+    # The main flight mode state machine node
     flight_mode_node = Node(
         package='erocket',
         executable='flight_mode',
@@ -28,6 +29,7 @@ def generate_launch_description():
         ],
     )
 
+    # Node responsible for running the test suite against flight_mode
     flight_mode_test_node = Node(
         package='erocket',
         executable='flight_mode_test',
@@ -40,7 +42,8 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        #micro_ros_agent,
+        # The micro-ROS agent is required to translate PX4 messages to ROS 2 topics
+        micro_ros_agent,
         flight_mode_node,
         flight_mode_test_node,
     ])
