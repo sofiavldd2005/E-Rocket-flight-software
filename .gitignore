@@ -1,3 +1,8 @@
 mprocs.log
 workspace_erocket/mav.*
 workspace_erocket/e-rocket/*
+
+# Generated / editor artifacts (global)
+.cache/
+compile_commands.json
+*.o
