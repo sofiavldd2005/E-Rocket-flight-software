@@ -1,13 +1,28 @@
+#include "px4_msgs/msg/actuator_armed.hpp"
+#include <rclcpp/publisher.hpp>
 #include <rclcpp/rclcpp.hpp>
 
+<<<<<<< HEAD
 #include <erocket/constants.hpp>
 #include <erocket/msg/flight_mode.hpp>
+=======
+#include <chrono>
+#include <erocket/constants.hpp>
+#include <erocket/msg/flight_mode.hpp>
+#include <iostream>
+#include <px4_msgs/msg/actuator_armed.hpp>
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
 #include <px4_msgs/msg/offboard_control_mode.hpp>
 #include <px4_msgs/msg/vehicle_control_mode.hpp>
+#include <px4_msgs/msg/vehicle_status.hpp> //Observing vehicle status from PX4
 #include <px4_msgs/srv/vehicle_command.hpp>
+<<<<<<< HEAD
 
 #include <chrono>
 #include <iostream>
+=======
+#include <rclcpp/subscription.hpp>
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
 #include <stdint.h>
 #include <string>
 
@@ -17,6 +32,7 @@ using namespace erocket::constants::flight_mode;
 using namespace erocket::constants::flight_mode;
 
 /**
+<<<<<<< HEAD
  * @class FlightMode
  * @brief PX4 ROS 2 Communication Node responsible for sending and receiving
  * commands to and from the PX4.
@@ -32,6 +48,13 @@ public:
    * Initializes publishers, subscribers, clients, and timers required for
    * communicating with PX4. Also requests an initial transition to manual mode.
    */
+=======
+ * @brief PX4 ROS2 Communication Node is responsible for sending and receiving
+ * commands to and from the PX4.
+ */
+class FlightMode : public rclcpp::Node {
+public:
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
   FlightMode()
       : Node("flight_mode"),
         flight_mode_current_{erocket::msg::FlightMode::INIT},
@@ -59,7 +82,21 @@ public:
             std::bind(&FlightMode::publish_offboard_control_mode, this))},
         vehicle_control_mode_publisher_{
             this->create_publisher<px4_msgs::msg::VehicleControlMode>(
+<<<<<<< HEAD
                 "/fmu/in/vehicle_control_mode", 10)} {
+=======
+                "/fmu/in/vehicle_control_mode", 10)},
+        vehicle_status_sub_{
+            this->create_subscription<px4_msgs::msg::VehicleStatus>(
+                "/fmu/out/vehicle_status", qos_,
+                std::bind(&FlightMode::handle_vehicle_status, this,
+                          std::placeholders::_1))},
+        actuator_armed_sub_{
+            this->create_subscription<px4_msgs::msg::ActuatorArmed>(
+                "/fmu/out/actuator_armed", qos_,
+                std::bind(&FlightMode::handle_actuator_armed, this,
+                          std::placeholders::_1))} {
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
     while (!vehicle_command_client_->wait_for_service(1s)) {
       RCLCPP_WARN(this->get_logger(),
                   "Vehicle Command Service (PX4) is unavailable");
@@ -70,6 +107,7 @@ public:
   }
 
 private:
+<<<<<<< HEAD
   std::atomic<uint8_t> flight_mode_current_; ///< Currently active flight mode
   std::atomic<uint8_t>
       flight_mode_requested_; ///< The flight mode requested to transition into
@@ -100,6 +138,44 @@ private:
       flight_mode_get_publisher_;
   void publish_flight_mode();
 
+=======
+  std::atomic<uint8_t> flight_mode_current_;
+  std::atomic<uint8_t> flight_mode_requested_;
+
+  std::atomic<uint8_t> nav_state_{0};
+  std::atomic<uint8_t> arming_state_{0};
+  std::atomic<bool> armed_{false};
+  uint8_t last_nav_state_{0xFF}; // 0xFF sentinel → first message always logs
+  bool last_armed_{false};
+  const char *nav_state_to_string(uint8_t nav_state);
+
+  rmw_qos_profile_t qos_profile_;
+  rclcpp::QoS qos_;
+
+  void switch_to_offboard_mode();
+  void switch_to_manual_mode();
+  void arm();
+  void disarm();
+  void terminate_flight();
+
+  rclcpp::Client<px4_msgs::srv::VehicleCommand>::SharedPtr
+      vehicle_command_client_;
+  void send_vehicle_command_request(const uint16_t command,
+                                    const double param1 = 0.0,
+                                    const double param2 = 0.0);
+  void handle_vehicle_command_response(
+      rclcpp::Client<px4_msgs::srv::VehicleCommand>::SharedFuture future);
+
+  rclcpp::Subscription<erocket::msg::FlightMode>::SharedPtr
+      flight_mode_set_subscriber_;
+  void handle_flight_mode_set(
+      const std::shared_ptr<erocket::msg::FlightMode> flight_mode_set_message);
+
+  rclcpp::Publisher<erocket::msg::FlightMode>::SharedPtr
+      flight_mode_get_publisher_;
+  void publish_flight_mode();
+
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
   rclcpp::Publisher<px4_msgs::msg::OffboardControlMode>::SharedPtr
       offboard_control_mode_publisher_;
   rclcpp::TimerBase::SharedPtr mantain_offboard_mode_timer_;
@@ -108,6 +184,17 @@ private:
   rclcpp::Publisher<px4_msgs::msg::VehicleControlMode>::SharedPtr
       vehicle_control_mode_publisher_;
   void publish_vehicle_control_mode();
+<<<<<<< HEAD
+=======
+
+  // ABORT stuff--see hows the PX4 stuff doing. if it is disarmed
+  rclcpp::Subscription<px4_msgs::msg::VehicleStatus>::SharedPtr
+      vehicle_status_sub_;
+  void handle_vehicle_status(const px4_msgs::msg::VehicleStatus::SharedPtr msg);
+  rclcpp::Subscription<px4_msgs::msg::ActuatorArmed>::SharedPtr
+      actuator_armed_sub_;
+  void handle_actuator_armed(const px4_msgs::msg::ActuatorArmed::SharedPtr msg);
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
 };
 
 /**
@@ -268,6 +355,7 @@ void FlightMode::publish_flight_mode() {
   flight_mode_get_publisher_->publish(msg);
 }
 
+<<<<<<< HEAD
 /**
  * @brief Sends a generic vehicle command request to PX4.
  *
@@ -275,6 +363,8 @@ void FlightMode::publish_flight_mode() {
  * @param param1 Command parameter 1 (default 0.0).
  * @param param2 Command parameter 2 (default 0.0).
  */
+=======
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
 void FlightMode::send_vehicle_command_request(const uint16_t command,
                                               const double param1,
                                               const double param2) {
@@ -341,15 +431,83 @@ void FlightMode::publish_vehicle_control_mode() {
   msg.flag_control_termination_enabled = false;
 
   msg.source_id = 1;
+<<<<<<< HEAD
 
+=======
+  // FIXME: maybe remove this?
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
   vehicle_control_mode_publisher_->publish(msg);
   RCLCPP_INFO(this->get_logger(), "Vehicle control mode command sent");
+}
+
+<<<<<<< HEAD
+int main(int argc, char *argv[]) {
+  std::cout << "Starting PX4 ROS2 Flight Mode node..." << std::endl;
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
+=======
+void FlightMode::handle_vehicle_status(
+    const px4_msgs::msg::VehicleStatus::SharedPtr msg) {
+  nav_state_.store(msg->nav_state);
+  arming_state_.store(msg->arming_state);
+
+  if (msg->nav_state != last_nav_state_) {
+    RCLCPP_INFO(this->get_logger(),
+                "PX4 nav_state -> %u (%s), arming_state -> %u", msg->nav_state,
+                nav_state_to_string(msg->nav_state), msg->arming_state);
+    last_nav_state_ = msg->nav_state;
+  }
+}
+
+void FlightMode::handle_actuator_armed(
+    const px4_msgs::msg::ActuatorArmed::SharedPtr msg) {
+  armed_.store(msg->armed);
+
+  if (msg->armed != last_armed_) {
+    RCLCPP_INFO(this->get_logger(), "PX4 armed -> %s",
+                msg->armed ? "true" : "false");
+    last_armed_ = msg->armed;
+  }
+}
+
+const char *FlightMode::nav_state_to_string(uint8_t nav_state) {
+  switch (nav_state) {
+  case px4_msgs::msg::VehicleStatus::NAVIGATION_STATE_MANUAL:
+    return "MANUAL";
+  case px4_msgs::msg::VehicleStatus::NAVIGATION_STATE_ALTCTL:
+    return "ALTCTL";
+  case px4_msgs::msg::VehicleStatus::NAVIGATION_STATE_POSCTL:
+    return "POSCTL";
+  case px4_msgs::msg::VehicleStatus::NAVIGATION_STATE_AUTO_MISSION:
+    return "AUTO_MISSION";
+  case px4_msgs::msg::VehicleStatus::NAVIGATION_STATE_AUTO_LOITER:
+    return "AUTO_LOITER";
+  case px4_msgs::msg::VehicleStatus::NAVIGATION_STATE_AUTO_RTL:
+    return "AUTO_RTL";
+  case px4_msgs::msg::VehicleStatus::NAVIGATION_STATE_ACRO:
+    return "ACRO";
+  case px4_msgs::msg::VehicleStatus::NAVIGATION_STATE_DESCEND:
+    return "DESCEND";
+  case px4_msgs::msg::VehicleStatus::NAVIGATION_STATE_TERMINATION:
+    return "TERMINATION";
+  case px4_msgs::msg::VehicleStatus::NAVIGATION_STATE_OFFBOARD:
+    return "OFFBOARD";
+  case px4_msgs::msg::VehicleStatus::NAVIGATION_STATE_STAB:
+    return "STAB";
+  case px4_msgs::msg::VehicleStatus::NAVIGATION_STATE_AUTO_TAKEOFF:
+    return "AUTO_TAKEOFF";
+  case px4_msgs::msg::VehicleStatus::NAVIGATION_STATE_AUTO_LAND:
+    return "AUTO_LAND";
+  default:
+    return "UNKNOWN";
+  }
 }
 
 int main(int argc, char *argv[]) {
   std::cout << "Starting PX4 ROS2 Flight Mode node..." << std::endl;
   setvbuf(stdout, NULL, _IONBF, BUFSIZ);
 
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
   rclcpp::init(argc, argv);
   rclcpp::spin(std::make_shared<FlightMode>());
 

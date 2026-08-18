@@ -1,0 +1,47 @@
+/usr/bin/cmake -S/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/src/sixdof_simulator -B/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator --check-build-system CMakeFiles/Makefile.cmake 0
+-- Building for ROS 2 Jazzy
+-- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+-- Found ament_cmake_ros: 0.12.1 (/opt/ros/jazzy/share/ament_cmake_ros/cmake)
+-- Found erocket: 0.1.0 (/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_erocket/install/erocket/share/erocket/cmake)
+-- Found rosidl_generator_c: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+-- Found rosidl_generator_cpp: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 8.4.4 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Configuring done (0.7s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator
+/usr/bin/cmake -E cmake_progress_start /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator/CMakeFiles /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator//CMakeFiles/progress.marks
+/usr/bin/gmake  -f CMakeFiles/Makefile2 all
+gmake[1]: Entering directory '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator'
+/usr/bin/gmake  -f CMakeFiles/sixdof_simulator.dir/build.make CMakeFiles/sixdof_simulator.dir/depend
+gmake[2]: Entering directory '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator'
+cd /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/src/sixdof_simulator /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/src/sixdof_simulator /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator/CMakeFiles/sixdof_simulator.dir/DependInfo.cmake "--color="
+gmake[2]: Leaving directory '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator'
+/usr/bin/gmake  -f CMakeFiles/sixdof_simulator.dir/build.make CMakeFiles/sixdof_simulator.dir/build
+gmake[2]: Entering directory '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator'
+gmake[2]: Nothing to be done for 'CMakeFiles/sixdof_simulator.dir/build'.
+gmake[2]: Leaving directory '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator'
+[100%] Built target sixdof_simulator
+gmake[1]: Leaving directory '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator'
+/usr/bin/cmake -E cmake_progress_start /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator/CMakeFiles 0
+-- Install configuration: "Release"
+-- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/lib/sixdof_simulator/sixdof_simulator
+-- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/ament_index/resource_index/package_run_dependencies/sixdof_simulator
+-- Installing: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/ament_index/resource_index/parent_prefix_path/sixdof_simulator
+-- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/environment/ament_prefix_path.sh
+-- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/environment/ament_prefix_path.dsv
+-- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/environment/path.sh
+-- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/environment/path.dsv
+-- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/local_setup.bash
+-- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/local_setup.sh
+-- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/local_setup.zsh
+-- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/local_setup.dsv
+-- Installing: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/package.dsv
+-- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/ament_index/resource_index/packages/sixdof_simulator
+-- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/cmake/ament_cmake_export_include_directories-extras.cmake
+-- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/cmake/sixdof_simulatorConfig.cmake
+-- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/cmake/sixdof_simulatorConfig-version.cmake
+-- Installing: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/package.xml

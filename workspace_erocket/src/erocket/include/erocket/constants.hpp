@@ -1,6 +1,7 @@
 // constants.hpp
 #pragma once
 
+<<<<<<< HEAD
 /**
  * @namespace erocket
  * @brief Main namespace for the E-Rocket flight software.
@@ -64,6 +65,82 @@ namespace controller
     constexpr char CONTROLLER_ATTITUDE_K_D_PARAM[] = "offboard.controller.attitude.gains.k_d";   ///< Attitude Derivative gain
     constexpr char CONTROLLER_ATTITUDE_K_I_PARAM[] = "offboard.controller.attitude.gains.k_i";   ///< Attitude Integral gain
     constexpr char CONTROLLER_ATTITUDE_FREQUENCY_HERTZ_PARAM[] = "offboard.controller.attitude.frequency_hertz"; ///< Attitude control frequency
+=======
+namespace erocket {
+namespace constants {
+
+constexpr char MASS_OF_SYSTEM[] = "offboard.mass_of_system";
+constexpr char LEVER_ARM[] = "offboard.lever_arm";
+constexpr char GRAVITATIONAL_ACCELERATION[] =
+    "offboard.gravitational_acceleration";
+constexpr char MOMENT_OF_INERTIA[] = "offboard.moment_of_inertia";
+
+namespace vehicle {
+constexpr char SERVO_ACTIVE_PARAM[] = "offboard.vehicle.servo_active";
+constexpr char MOTOR_ACTIVE_PARAM[] = "offboard.vehicle.motor_active";
+
+constexpr char SERVO_MAX_TILT_ANGLE_DEGREES_PARAM[] =
+    "offboard.vehicle.servo_max_tilt_angle_degrees";
+constexpr char CONTROLLER_DEFAULT_MOTOR_PWM[] =
+    "offboard.vehicle.default_motor_pwm";
+constexpr char MAX_MOTOR_PWM_PARAM[] = "offboard.vehicle.motor_max_pwm";
+constexpr char MOTOR_THRUST_CURVE_M_PARAM[] =
+    "offboard.vehicle.motor_thrust_curve.m";
+constexpr char MOTOR_THRUST_CURVE_B_PARAM[] =
+    "offboard.vehicle.motor_thrust_curve.b";
+
+constexpr char DELTA_TORQUE_A_PARAM[] = "offboard.vehicle.delta_torque.a";
+constexpr char DELTA_TORQUE_B_PARAM[] = "offboard.vehicle.delta_torque.b";
+constexpr char DELTA_TORQUE_C_PARAM[] = "offboard.vehicle.delta_torque.c";
+
+} // namespace vehicle
+
+namespace controller {
+
+//<! Topics for the 1-degree-of-freedom system
+constexpr char CONTROLLER_INPUT_ATTITUDE_TOPIC[] = "/fmu/out/vehicle_attitude";
+constexpr char CONTROLLER_INPUT_ANGULAR_RATE_TOPIC[] =
+    "/fmu/out/vehicle_angular_velocity";
+constexpr char CONTROLLER_INPUT_LOCAL_POSITION_TOPIC[] =
+    "/fmu/out/vehicle_local_position";
+constexpr char CONTROLLER_INPUT_ODOMETRY_TOPIC[] = "/fmu/out/vehicle_odometry";
+constexpr char CONTROLLER_OUTPUT_MOTOR_PWM_TOPIC[] = "/fmu/in/actuator_motors";
+constexpr char CONTROLLER_OUTPUT_SERVO_PWM_TOPIC[] = "/fmu/in/actuator_servos";
+
+constexpr char CONTROLLER_ATTITUDE_DEBUG_TOPIC[] =
+    "/offboard/attitude_controller/debug";
+constexpr char CONTROLLER_POSITION_DEBUG_TOPIC[] =
+    "/offboard/position_controller/debug";
+constexpr char ALLOCATOR_DEBUG_TOPIC[] = "/offboard/allocator/debug";
+
+constexpr char CONTROLLER_ATTITUDE_ACTIVE_PARAM[] =
+    "offboard.controller.attitude.active";
+constexpr char CONTROLLER_ATTITUDE_K_P_PARAM[] =
+    "offboard.controller.attitude.gains.k_p";
+constexpr char CONTROLLER_ATTITUDE_K_D_PARAM[] =
+    "offboard.controller.attitude.gains.k_d";
+constexpr char CONTROLLER_ATTITUDE_K_I_PARAM[] =
+    "offboard.controller.attitude.gains.k_i";
+constexpr char CONTROLLER_ATTITUDE_FREQUENCY_HERTZ_PARAM[] =
+    "offboard.controller.attitude.frequency_hertz";
+
+constexpr char CONTROLLER_POSITION_ACTIVE_PARAM[] =
+    "offboard.controller.position.active";
+constexpr char CONTROLLER_POSITION_K_P_PARAM[] =
+    "offboard.controller.position.gains.k_p";
+constexpr char CONTROLLER_POSITION_K_D_PARAM[] =
+    "offboard.controller.position.gains.k_d";
+constexpr char CONTROLLER_POSITION_K_I_PARAM[] =
+    "offboard.controller.position.gains.k_i";
+constexpr char CONTROLLER_POSITION_K_FF_PARAM[] =
+    "offboard.controller.position.gains.k_ff";
+constexpr char CONTROLLER_POSITION_MIN_OUTPUT_PARAM[] =
+    "offboard.controller.position.gains.min_output";
+constexpr char CONTROLLER_POSITION_MAX_OUTPUT_PARAM[] =
+    "offboard.controller.position.gains.max_output";
+constexpr char CONTROLLER_POSITION_FREQUENCY_HERTZ_PARAM[] =
+    "offboard.controller.position.frequency_hertz";
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
 
     constexpr char CONTROLLER_POSITION_ACTIVE_PARAM[] = "offboard.controller.position.active";   ///< Enable position control
     constexpr char CONTROLLER_POSITION_K_P_PARAM[] = "offboard.controller.position.gains.k_p";   ///< Position Proportional gain
@@ -75,6 +152,7 @@ namespace controller
     constexpr char CONTROLLER_POSITION_FREQUENCY_HERTZ_PARAM[] = "offboard.controller.position.frequency_hertz"; ///< Position control frequency
 } // namespace controller
 
+<<<<<<< HEAD
 /**
  * @namespace controller_generic
  * @brief Parameters for the generic template controller.
@@ -94,14 +172,49 @@ namespace flight_mode
     //<! Topics for the 1-degree-of-freedom system
     constexpr char FLIGHT_MODE_GET_TOPIC[] = "offboard/flight_mode/get"; ///< Topic to read current flight mode
     constexpr char FLIGHT_MODE_SET_TOPIC[] = "offboard/flight_mode/set"; ///< Topic to request flight mode change
+=======
+namespace controller_generic {
+
+// Params for generic controller
+
+constexpr char CONTROLLER_GENERIC_FREQUENCY_HERTZ_PARAM[] =
+    "offboard.controller.generic.frequency_hertz";
+constexpr char CONTROLLER_GENERIC_KP_PARAM[] =
+    "offboard.controller.generic.gains.Kp";
+constexpr char CONTROLLER_GENERIC_KV_PARAM[] =
+    "offboard.controller.generic.gains.Kv";
+constexpr char CONTROLLER_GENERIC_LAMBDA1_PARAM[] =
+    "offboard.controller.generic.gains.Lambda_1";
+constexpr char CONTROLLER_GENERIC_LAMBDA2_PARAM[] =
+    "offboard.controller.generic.gains.Lambda_2";
+constexpr char CONTROLLER_GENERIC_LAMBDA3_PARAM[] =
+    "offboard.controller.generic.gains.Lambda_3";
+constexpr char CONTROLLER_GENERIC_KR_PARAM[] =
+    "offboard.controller.generic.gains.kr";
+constexpr char CONTROLLER_GENERIC_HR_PARAM[] =
+    "offboard.controller.generic.gains.hr";
+constexpr char CONTROLLER_GENERIC_KW_PARAM[] =
+    "offboard.controller.generic.gains.kw";
+constexpr char CONTROLLER_GENERIC_HW_PARAM[] =
+    "offboard.controller.generic.gains.hw";
+constexpr char CONTROLLER_GENERIC_DELTA_PARAM[] =
+    "offboard.controller.generic.delta";
+} // namespace controller_generic
+
+namespace flight_mode {
+
+//<! Topics for the 1-degree-of-freedom system
+constexpr char FLIGHT_MODE_GET_TOPIC[] = "offboard/flight_mode/get";
+constexpr char FLIGHT_MODE_SET_TOPIC[] = "offboard/flight_mode/set";
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
 
 } // namespace flight_mode
 
-namespace flight_mode
-{
+namespace flight_mode {
 
-    constexpr float MANTAIN_OFFBOARD_MODE_TIMER_PERIOD_SECONDS = 0.1f; // 10 Hz
+constexpr float MANTAIN_OFFBOARD_MODE_TIMER_PERIOD_SECONDS = 0.1f; // 10 Hz
 
+<<<<<<< HEAD
     //<! Parameters for the flight mode node
     constexpr char FLIGHT_MODE_PARAM[] = "offboard.flight_mode"; ///< Parameter for flight mode
 
@@ -158,6 +271,53 @@ namespace emergency
 {
 
     constexpr char EMERGENCY_ACTUATOR_ARMED[] = "fmu/out/actuator_armed"; ///< Topic indicating physical actuator armed state
+=======
+//<! Parameters for the flight mode node
+constexpr char FLIGHT_MODE_PARAM[] = "offboard.flight_mode";
+
+} // namespace flight_mode
+
+namespace mocap_forwarder {
+
+constexpr char MOCAP_TOPIC[] = "/mocap/pose_enu/erocket";
+constexpr char MOCAP_ACTIVE_PARAM[] = "offboard.mocap.active";
+
+} // namespace mocap_forwarder
+
+namespace setpoint {
+
+constexpr char CONTROLLER_INPUT_ATTITUDE_SETPOINT_TOPIC[] =
+    "offboard/attitude_setpoint_degrees";
+constexpr char MISSION_ATTITUDE_SETPOINT_PARAM[] =
+    "offboard.mission.attitude_setpoint.degrees";
+
+constexpr char CONTROLLER_INPUT_TRANSLATION_POSITION_SETPOINT_TOPIC[] =
+    "offboard/translation_position_setpoint_meters";
+constexpr char MISSION_TRANSLATION_POSITION_SETPOINT_PARAM[] =
+    "offboard.mission.translation_position_setpoint.meters";
+
+constexpr char CONTROLLER_INPUT_SETPOINT_C5_TOPIC[] =
+    "offboard/setpoint_c5_meters";
+constexpr char MISSION_TRAJECTORY_SETPOINT_ACTIVE_PARAM[] =
+    "offboard.mission.trajectory_setpoint.active";
+
+} // namespace setpoint
+
+namespace takeoff_landing {
+
+constexpr char MISSION_TAKEOFF_CLIMB_HEIGHT_PARAM[] =
+    "offboard.mission.takeoff_climb_height_meters";
+constexpr char MISSION_TAKEOFF_CLIMB_DURATION_PARAM[] =
+    "offboard.mission.takeoff_climb_duration_seconds";
+constexpr char MISSION_LANDING_DESCENT_DURATION_PARAM[] =
+    "offboard.mission.landing_descent_duration_seconds";
+
+} // namespace takeoff_landing
+
+namespace emergency {
+
+constexpr char EMERGENCY_ACTUATOR_ARMED[] = "fmu/out/actuator_armed";
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
 
 } // namespace emergency
 } // namespace constants

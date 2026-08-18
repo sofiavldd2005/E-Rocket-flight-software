@@ -12,6 +12,7 @@ using namespace px4_msgs::msg;
  */
 class EmergencySwitch {
 public:
+<<<<<<< HEAD
   /**
    * @brief Construct a new Emergency Switch
    * 
@@ -32,6 +33,24 @@ public:
                 RCLCPP_WARN(logger_, "Emergency switch is ON!");
               }
             })} {}
+=======
+  EmergencySwitch(rclcpp::Node *node, rclcpp::QoS qos)
+      : actuator_armed_sub_{node->create_subscription<ActuatorArmed>(
+            EMERGENCY_ACTUATOR_ARMED, qos,
+            [this](const ActuatorArmed::SharedPtr msg) {
+              if (msg->manual_lockdown || msg->force_failsafe ||
+                  (msg->lockdown && msg->armed)) {
+                emergency_switch_on_.store(true);
+                RCLCPP_WARN(logger_,
+                            "Emergency switch ON: manual_lockdown=%d "
+                            "force_failsafe=%d lockdown=%d armed=%d",
+                            msg->manual_lockdown, msg->force_failsafe,
+                            msg->lockdown, msg->armed);
+              }
+            })} {}
+
+  bool emergency_switch_on() { return emergency_switch_on_; }
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
 
   /**
    * @brief Check if the emergency switch has been triggered.
@@ -43,5 +62,9 @@ public:
 private:
   rclcpp::Logger logger_{rclcpp::get_logger("EmergencySwitch")};
   rclcpp::Subscription<ActuatorArmed>::SharedPtr actuator_armed_sub_;
+<<<<<<< HEAD
   bool emergency_switch_on_{false};
+=======
+  std::atomic<bool> emergency_switch_on_{false};
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
 };

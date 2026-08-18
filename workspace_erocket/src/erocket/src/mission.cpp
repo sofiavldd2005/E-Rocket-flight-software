@@ -27,6 +27,7 @@ using namespace erocket::constants::takeoff_landing;
 using namespace erocket::constants::emergency;
 
 /**
+<<<<<<< HEAD
  * @class Mission
  * @brief ROS 2 node responsible for high-level flight state logic and
  * trajectory generation.
@@ -43,6 +44,13 @@ public:
    * Initializes ROS 2 timers, publishers, subscribers, parameters, and the
    * emergency switch.
    */
+=======
+ * @brief PX4 ROS2 Communication Node is responsible for sending and receiving
+ * commands to and from the PX4.
+ */
+class Mission : public rclcpp::Node {
+public:
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
   Mission()
       : Node("mission"), flight_mode_{FlightMode::INIT},
         qos_profile_{rmw_qos_profile_sensor_data},
@@ -57,10 +65,13 @@ public:
                 FLIGHT_MODE_GET_TOPIC, qos_,
                 std::bind(&Mission::response_flight_mode_callback, this,
                           std::placeholders::_1))},
+<<<<<<< HEAD
 
         // Runs at 100 Hz (every 10 milliseconds).
         // This loop dedicated to generating the mathematical flight trajectory
         // and checking the emergency switch
+=======
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
         mission_timer_{
             this->create_wall_timer(10ms, std::bind(&Mission::mission, this))},
         attitude_setpoint_publisher_{this->create_publisher<Vector3Stamped>(
@@ -70,6 +81,7 @@ public:
                 CONTROLLER_INPUT_TRANSLATION_POSITION_SETPOINT_TOPIC, qos_)},
         trajectory_setpoint_publisher_{this->create_publisher<SetpointC5>(
             CONTROLLER_INPUT_SETPOINT_C5_TOPIC, qos_)},
+<<<<<<< HEAD
         emergency_switch_{this, qos_}
 
   {
@@ -110,6 +122,42 @@ public:
     landing_descent_duration_ =
         this->get_parameter(MISSION_LANDING_DESCENT_DURATION_PARAM).as_double();
 
+=======
+        emergency_switch_{this, qos_} {
+    flight_mode_timer_ =
+        this->create_wall_timer(1s, std::bind(&Mission::flight_mode, this));
+
+    // Declare the setpoint attitude parameter as array of 3 floats [roll,
+    // pitch, yaw]
+    this->declare_parameter<std::vector<double>>(
+        MISSION_ATTITUDE_SETPOINT_PARAM, std::vector<double>{0.0, 0.0, 0.0});
+    this->declare_parameter<std::vector<double>>(
+        MISSION_TRANSLATION_POSITION_SETPOINT_PARAM,
+        std::vector<double>{0.0, 0.0, 0.0});
+    this->declare_parameter<uint8_t>(FLIGHT_MODE_PARAM, FlightMode::INIT);
+
+    parameter_callback_handle_ = this->add_on_set_parameters_callback(
+        std::bind(&Mission::parameter_callback, this, std::placeholders::_1));
+
+    this->declare_parameter<bool>(MISSION_TRAJECTORY_SETPOINT_ACTIVE_PARAM);
+    trajectory_setpoint_active_ =
+        this->get_parameter(MISSION_TRAJECTORY_SETPOINT_ACTIVE_PARAM).as_bool();
+    RCLCPP_INFO(this->get_logger(), "Mission trajectory setpoint active: %s",
+                trajectory_setpoint_active_ ? "true" : "false");
+
+    this->declare_parameter<double>(MISSION_TAKEOFF_CLIMB_HEIGHT_PARAM);
+    desired_climb_height_ =
+        this->get_parameter(MISSION_TAKEOFF_CLIMB_HEIGHT_PARAM).as_double();
+
+    this->declare_parameter<double>(MISSION_TAKEOFF_CLIMB_DURATION_PARAM);
+    takeoff_climb_duration_ =
+        this->get_parameter(MISSION_TAKEOFF_CLIMB_DURATION_PARAM).as_double();
+
+    this->declare_parameter<double>(MISSION_LANDING_DESCENT_DURATION_PARAM);
+    landing_descent_duration_ =
+        this->get_parameter(MISSION_LANDING_DESCENT_DURATION_PARAM).as_double();
+
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
     RCLCPP_INFO(this->get_logger(),
                 "Mission desired climb height: %f m, takeoff climb duration: "
                 "%f s, landing descent duration: %f s",
@@ -118,6 +166,7 @@ public:
   }
 
 private:
+<<<<<<< HEAD
   std::atomic<uint8_t> flight_mode_; ///< Current flight mode atomic variable
 
   rmw_qos_profile_t
@@ -213,6 +262,52 @@ private:
 
   EmergencySwitch
       emergency_switch_; ///< Listens to external emergency abort signals
+=======
+  std::atomic<uint8_t> flight_mode_;
+
+  rmw_qos_profile_t qos_profile_;
+  rclcpp::QoS qos_;
+
+  double desired_climb_height_;
+  double takeoff_climb_duration_;
+  double landing_descent_duration_;
+  State ground_state_;
+
+  std::shared_ptr<StateAggregator> state_aggregator_;
+
+  std::atomic<bool> flag_flight_mode_requested_;
+  rclcpp::Publisher<erocket::msg::FlightMode>::SharedPtr
+      flight_mode_set_publisher_;
+  void request_flight_mode(uint8_t flight_mode);
+
+  rclcpp::Subscription<erocket::msg::FlightMode>::SharedPtr
+      flight_mode_get_subscriber_;
+  void response_flight_mode_callback(
+      std::shared_ptr<erocket::msg::FlightMode> response);
+
+  rclcpp::TimerBase::SharedPtr flight_mode_timer_;
+  void flight_mode();
+
+  rclcpp::TimerBase::SharedPtr mission_timer_;
+  void mission();
+
+  rclcpp::Publisher<Vector3Stamped>::SharedPtr attitude_setpoint_publisher_;
+  void publish_attitude_setpoint_radians(Eigen::Vector3d setpoint_radians);
+
+  rclcpp::Publisher<Vector3Stamped>::SharedPtr
+      translation_position_setpoint_publisher_;
+  void publish_translation_position_setpoint(
+      Eigen::Vector3d translation_setpoint_meters);
+
+  bool trajectory_setpoint_active_;
+  rclcpp::Publisher<SetpointC5>::SharedPtr trajectory_setpoint_publisher_;
+
+  OnSetParametersCallbackHandle::SharedPtr parameter_callback_handle_;
+  rcl_interfaces::msg::SetParametersResult
+  parameter_callback(const std::vector<rclcpp::Parameter> &parameters);
+
+  EmergencySwitch emergency_switch_;
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
 };
 
 void Mission::flight_mode() {
@@ -242,6 +337,7 @@ void Mission::flight_mode() {
     if (!initialized_position_setpoint) {
       initialized_position_setpoint = true;
       auto state = state_aggregator_->get_state();
+<<<<<<< HEAD
       // SetpointC5 message to do this. "C5" in robotics usually refers to a
       // trajectory that is continuous up to the 5th derivative feed a smooth
       // curve
@@ -274,6 +370,38 @@ void Mission::flight_mode() {
     }
   } break;
 
+=======
+
+      SetpointC5 setpoint{};
+      Eigen::Map<Eigen::Vector3d>(setpoint.position.data()) = state.position;
+      setpoint.yaw = state.euler_angles[2]; // keep current yaw
+      trajectory_setpoint_publisher_->publish(setpoint);
+      RCLCPP_INFO(this->get_logger(),
+                  "Initialized position setpoint to current position: [%f, %f, "
+                  "%f], yaw: %f",
+                  setpoint.position[0], setpoint.position[1],
+                  setpoint.position[2], radians_to_degrees(setpoint.yaw));
+    }
+
+    ground_state_ = state_aggregator_->get_state();
+  } break;
+
+  case FlightMode::IN_MISSION: {
+    static rclcpp::Time IN_MISSION_time = this->get_clock()->now();
+    auto current_time = this->get_clock()->now();
+    auto elapsed_time = current_time - IN_MISSION_time;
+
+    // Log mission progress periodically (every second)
+    static rclcpp::Time last_log_time = IN_MISSION_time;
+    if (current_time - last_log_time >= 10s) {
+      last_log_time = current_time;
+      RCLCPP_INFO(this->get_logger(),
+                  "Mission in progress - Elapsed time: %.2f seconds",
+                  elapsed_time.seconds());
+    }
+  } break;
+
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
   case FlightMode::ABORT:
     RCLCPP_ERROR(this->get_logger(), "Mission Aborted!");
     rclcpp::shutdown();
@@ -299,6 +427,7 @@ void Mission::mission() {
     auto new_setpoint =
         compute_takeoff(t, ground_state_.position, desired_climb_height_,
                         takeoff_climb_duration_);
+<<<<<<< HEAD
     // takes the elapsed time t.It outputs a mathematically smooth vector for
     // Position (pd), Velocity (pd_dot), Acceleration (pd_2dot), Jerk (pd_3dot),
     // and Snap (pd_4dot
@@ -346,6 +475,55 @@ void Mission::mission() {
       setpoint.acceleration[2] = new_setpoint[9];
       setpoint.yaw = std::nan("");
 
+=======
+
+    SetpointC5 setpoint{};
+    // (void) new_setpoint[0]; // time
+    Eigen::Map<Eigen::Vector3d>(setpoint.position.data()) = new_setpoint.pd;
+    Eigen::Map<Eigen::Vector3d>(setpoint.velocity.data()) = new_setpoint.pd_dot;
+    Eigen::Map<Eigen::Vector3d>(setpoint.acceleration.data()) =
+        new_setpoint.pd_2dot;
+    Eigen::Map<Eigen::Vector3d>(setpoint.jerk.data()) = Eigen::Vector3d::Zero();
+    Eigen::Map<Eigen::Vector3d>(setpoint.snap.data()) = Eigen::Vector3d::Zero();
+    setpoint.yaw = std::nan("");
+
+    trajectory_setpoint_publisher_->publish(setpoint);
+  }
+
+  if (flight_mode_.load() == FlightMode::IN_MISSION) {
+    if (trajectory_setpoint_active_) {
+#include "setpoints.h"
+      static uint32_t index = 0;
+      if (index >= sizeof(Setpoints) / sizeof(Setpoints[0])) {
+        RCLCPP_INFO(this->get_logger(),
+                    "Mission Trajectory Tracking Complete! No more setpoints");
+        RCLCPP_INFO(this->get_logger(), "Switching to LANDING mode");
+        request_flight_mode(FlightMode::LANDING);
+        return;
+      }
+
+      auto new_setpoint = Setpoints[index];
+
+      SetpointC5 setpoint{};
+      // (void) new_setpoint[0]; // time
+      setpoint.position[0] = new_setpoint[1];
+      setpoint.velocity[0] = new_setpoint[2];
+      setpoint.acceleration[0] = new_setpoint[3];
+      setpoint.jerk[0] = new_setpoint[4];
+      setpoint.snap[0] = new_setpoint[5];
+      setpoint.position[1] = new_setpoint[6];
+      setpoint.velocity[1] = new_setpoint[7];
+      setpoint.acceleration[1] = new_setpoint[8];
+      setpoint.jerk[1] = new_setpoint[9];
+      setpoint.snap[1] = new_setpoint[10];
+      setpoint.position[2] = new_setpoint[11];
+      setpoint.velocity[2] = new_setpoint[12];
+      setpoint.acceleration[2] = new_setpoint[13];
+      setpoint.jerk[2] = new_setpoint[14];
+      setpoint.snap[2] = new_setpoint[15];
+      setpoint.yaw = std::nan("");
+
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
       trajectory_setpoint_publisher_->publish(setpoint);
       index++;
     }
@@ -367,8 +545,13 @@ void Mission::mission() {
     Eigen::Map<Eigen::Vector3d>(setpoint.velocity.data()) = new_setpoint.pd_dot;
     Eigen::Map<Eigen::Vector3d>(setpoint.acceleration.data()) =
         new_setpoint.pd_2dot;
+<<<<<<< HEAD
     Eigen::Map<Eigen::Vector3d>(setpoint.jerk.data()) = new_setpoint.pd_3dot;
     Eigen::Map<Eigen::Vector3d>(setpoint.snap.data()) = new_setpoint.pd_4dot;
+=======
+    Eigen::Map<Eigen::Vector3d>(setpoint.jerk.data()) = Eigen::Vector3d::Zero();
+    Eigen::Map<Eigen::Vector3d>(setpoint.snap.data()) = Eigen::Vector3d::Zero();
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
     setpoint.yaw = std::nan("");
 
     trajectory_setpoint_publisher_->publish(setpoint);
@@ -489,10 +672,13 @@ Mission::parameter_callback(const std::vector<rclcpp::Parameter> &parameters) {
       RCLCPP_INFO(this->get_logger(), "Requesting flight mode to: %d",
                   new_flight_mode);
       request_flight_mode(new_flight_mode);
+<<<<<<< HEAD
 
       while (new_flight_mode == FlightMode::ABORT) {
         request_flight_mode(FlightMode::ABORT);
       }
+=======
+>>>>>>> dbe42f2 (1. Documentation explaining Simulink Codegen and troubleshooting)
     }
   }
 

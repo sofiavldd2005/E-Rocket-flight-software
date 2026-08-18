@@ -1,0 +1,51 @@
+[0.013s] Invoking command in '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator -- -j16 -l16
+[0.025s] /usr/bin/cmake -S/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/src/sixdof_simulator -B/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator --check-build-system CMakeFiles/Makefile.cmake 0
+[0.042s] -- Building for ROS 2 Jazzy
+[0.042s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[0.262s] -- Found ament_cmake_ros: 0.12.1 (/opt/ros/jazzy/share/ament_cmake_ros/cmake)
+[0.265s] -- Found erocket: 0.1.0 (/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_erocket/install/erocket/share/erocket/cmake)
+[0.292s] -- Found rosidl_generator_c: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[0.301s] -- Found rosidl_generator_cpp: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[0.314s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.328s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.407s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[0.409s] -- Found rmw_fastrtps_cpp: 8.4.4 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[0.480s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.755s] -- Configuring done (0.7s)
+[0.769s] -- Generating done (0.0s)
+[0.774s] -- Build files have been written to: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator
+[0.783s] /usr/bin/cmake -E cmake_progress_start /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator/CMakeFiles /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator//CMakeFiles/progress.marks
+[0.792s] /usr/bin/gmake  -f CMakeFiles/Makefile2 all
+[0.793s] gmake[1]: Entering directory '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator'
+[0.793s] /usr/bin/gmake  -f CMakeFiles/sixdof_simulator.dir/build.make CMakeFiles/sixdof_simulator.dir/depend
+[0.795s] gmake[2]: Entering directory '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator'
+[0.795s] cd /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/src/sixdof_simulator /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/src/sixdof_simulator /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator/CMakeFiles/sixdof_simulator.dir/DependInfo.cmake "--color="
+[0.819s] gmake[2]: Leaving directory '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator'
+[0.819s] /usr/bin/gmake  -f CMakeFiles/sixdof_simulator.dir/build.make CMakeFiles/sixdof_simulator.dir/build
+[0.828s] gmake[2]: Entering directory '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator'
+[0.828s] gmake[2]: Nothing to be done for 'CMakeFiles/sixdof_simulator.dir/build'.
+[0.828s] gmake[2]: Leaving directory '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator'
+[0.836s] [100%] Built target sixdof_simulator
+[0.837s] gmake[1]: Leaving directory '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator'
+[0.837s] /usr/bin/cmake -E cmake_progress_start /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator/CMakeFiles 0
+[0.849s] Invoked command in '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator -- -j16 -l16
+[0.860s] Invoking command in '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator
+[0.868s] -- Install configuration: "Release"
+[0.868s] -- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/lib/sixdof_simulator/sixdof_simulator
+[0.868s] -- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/ament_index/resource_index/package_run_dependencies/sixdof_simulator
+[0.868s] -- Installing: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/ament_index/resource_index/parent_prefix_path/sixdof_simulator
+[0.868s] -- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/environment/ament_prefix_path.sh
+[0.868s] -- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/environment/ament_prefix_path.dsv
+[0.869s] -- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/environment/path.sh
+[0.869s] -- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/environment/path.dsv
+[0.869s] -- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/local_setup.bash
+[0.869s] -- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/local_setup.sh
+[0.869s] -- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/local_setup.zsh
+[0.869s] -- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/local_setup.dsv
+[0.869s] -- Installing: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/package.dsv
+[0.869s] -- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/ament_index/resource_index/packages/sixdof_simulator
+[0.869s] -- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/cmake/ament_cmake_export_include_directories-extras.cmake
+[0.869s] -- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/cmake/sixdof_simulatorConfig.cmake
+[0.869s] -- Up-to-date: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/cmake/sixdof_simulatorConfig-version.cmake
+[0.869s] -- Installing: /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/install/sixdof_simulator/share/sixdof_simulator/package.xml
+[0.870s] Invoked command in '/home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/sofia/Documents/E-Rocket-All-Stuff/E-Rocket-flight-software/workspace_simulink/build/sixdof_simulator
